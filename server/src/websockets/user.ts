@@ -1,6 +1,6 @@
 import { Elysia } from "elysia";
 
-export const user_websocket = (route : string) => new Elysia()
+export const websocket_instance = (route : string) => new Elysia()
 .ws(route, {
   open(ws) {
     console.log(ws.id)

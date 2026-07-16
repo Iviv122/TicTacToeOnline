@@ -1,7 +1,7 @@
 import { User } from "./user";
 
-interface Room{
-  id: bigint,
+export interface Room{
+  id: String,
   name: String,
   users: User[]
 }

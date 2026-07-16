@@ -2,6 +2,7 @@ import { serve } from "bun";
 import index from "./index.html";
 
 const server = serve({
+  port: 0,
   routes: {
     "/*": index,
 
