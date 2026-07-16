@@ -1,13 +1,14 @@
 import Elysia, { t } from "elysia";
-import { RoomManager } from "../../classes/room_manager";
+import { roomManager } from "../../classes/room_manager";
+
+
 
 export const room_route = new Elysia({ prefix: "/room" })
-  .decorate("RoomManager", new RoomManager())
-  .get("/", ({ RoomManager }) => {
-    return RoomManager.get_rooms();
+  .get("/", () => {
+    return roomManager.get_rooms();
   })
-  .post("add", ({ RoomManager, body: { name } }) => {
-    const room = RoomManager.add_room(name)
+  .post("add", ({ body: { name } }) => {
+    const room = roomManager.add_room(name)
     return room
   }, {
     body: t.Object({

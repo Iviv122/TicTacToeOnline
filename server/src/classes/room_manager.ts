@@ -2,26 +2,32 @@ import { randomUUIDv7 } from "bun";
 import { Room } from "../types/room";
 import { User } from "../types/user";
 
-export class RoomManager {
-  rooms: Room[] = [];
+export class RoomManager extends EventTarget {
+  constructor() {
+    super();
+  }
+  private _onAdd: Event = new Event('onAdd')
+  private rooms: Room[] = [];
 
   add_room(room_name: String) {
     const room = {
-            id: randomUUIDv7(),
-            name: room_name,
-            users: [] as User[],
-    } as Room
-    this.rooms.push(room)
-    return room
+      id: randomUUIDv7(),
+      name: room_name,
+      users: [] as User[],
+    } as Room;
+    this.rooms.push(room);
+    this.dispatchEvent(this._onAdd)
+    return room;
   }
   get_rooms() {
-    return this.rooms
+    return this.rooms;
   }
-  get_room(id : string) {
-    return this.rooms.find(i => i.id == id)
+  get_room(id: string) {
+    return this.rooms.find((i) => i.id == id);
   }
   count_rooms() {
-    return this.rooms.length
+    return this.rooms.length;
   }
-
 }
+
+export const roomManager = new RoomManager();
