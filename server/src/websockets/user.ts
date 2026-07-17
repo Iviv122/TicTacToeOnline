@@ -2,11 +2,11 @@ import { Elysia, t } from "elysia";
 import { roomManager } from "../classes/room_manager";
 import { User } from "../types/user";
 
-const clients = new Set<User>();
+const clients = new Map<string,User>()
 
 roomManager.addEventListener("onAdd", () => {
-  for (const ws of clients) {
-    ws.sendMessage(roomManager.get_rooms().toString());
+  for (const client of clients) {
+    client[1].sendMessage(roomManager.get_rooms().toString());
   }
 });
 
@@ -31,15 +31,13 @@ export const websocket_instance = (route: string) =>
     open(ws) {
       ws.send(roomManager.get_rooms());
       const user = new User(ws.id, `User_${ws.id.slice(0, 4)}`, ws.raw);
-      clients.add(user)
+      clients.set(ws.id,user)
     },
     message(ws, message) {
       ws.send(message);
-
-      console.log(ws);
     },
     close(ws, code, reason) {
-      clients.delete(ws);
+      clients.delete(ws.id)
       console.log(code, reason);
     },
   });
