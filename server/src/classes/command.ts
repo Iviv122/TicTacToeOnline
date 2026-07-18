@@ -16,3 +16,4 @@ export const CommandPayload = t.Object({
     text: t.Optional(t.String()),
   }),
 });
+export type CommandPayloadType = typeof CommandPayload.static

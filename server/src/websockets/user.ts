@@ -1,7 +1,7 @@
 import { Elysia, t } from "elysia";
 import { roomManager } from "../classes/room_manager";
 import { Message, User } from "../classes/user";
-import { CommandPayload } from "../classes/command";
+import { CommandPayload, CommandPayloadType } from "../classes/command";
 import { Room } from "../classes/room";
 
 const clients = new Map<string,User>()
@@ -53,7 +53,19 @@ function onUsersChange() {
   }
 }
 
-function
+function UserJoinRoom(user: User, room_id : String) {
+  const room = roomManager.get_rooms().find(i => i.id === room_id)
+  room?.users.push(user)
+}
+
+function handleUserMessage(user : User,mess: CommandPayloadType) {
+  switch (mess.command) {
+    case "join":
+      UserJoinRoom(user, mess.payload.room || "")
+      return;
+
+  }
+}
 
 export const websocket_instance = (route: string) =>
   new Elysia().ws(route, {
@@ -68,6 +80,10 @@ export const websocket_instance = (route: string) =>
     message(ws, message) {
       ws.send(message);
       console.log(message)
+      const user = clients.get(ws.id)
+      if (user) {
+        handleUserMessage(user, message)
+      }
     },
     close(ws, code, reason) {
       clients.delete(ws.id)
