@@ -2,6 +2,7 @@ import { Elysia, t } from "elysia";
 import { roomManager } from "../classes/room_manager";
 import { Message, User } from "../classes/user";
 import { CommandPayload } from "../classes/command";
+import { Room } from "../classes/room";
 
 const clients = new Map<string,User>()
 
@@ -17,8 +18,20 @@ function sendRooms(user : User){
     type: 'rooms',
     data : roomManager.get_rooms()
   } as Message
-
   user.sendMessage(mess)
+}
+function sendRoom(user : User,room: Room){
+  const mess = {
+    type: 'rooms',
+    data : room
+  } as Message
+  user.sendMessage(mess)
+}
+
+function onRoomUpdate(room : Room) {
+  for (const client of clients.values()) {
+    sendRoom(client, room)
+  }
 }
 
 function sendUsers(user : User){
@@ -30,7 +43,6 @@ function sendUsers(user : User){
     type: 'users',
     data: users
   } as Message
-  console.clear()
   console.log(mess)
   user.sendMessage(mess)
 }
@@ -40,6 +52,8 @@ function onUsersChange() {
     sendUsers(i)
   }
 }
+
+function
 
 export const websocket_instance = (route: string) =>
   new Elysia().ws(route, {
@@ -53,6 +67,7 @@ export const websocket_instance = (route: string) =>
     },
     message(ws, message) {
       ws.send(message);
+      console.log(message)
     },
     close(ws, code, reason) {
       clients.delete(ws.id)

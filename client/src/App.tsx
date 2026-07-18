@@ -44,7 +44,18 @@ function App() {
         {
           rooms.map((i) =>
             <div>
-              {i.name}
+              <h3>{i.name}</h3>
+              <p>users: {i.users.length}</p>
+              <button onClick={() => {
+                const mes = {
+                  command: "join",
+                  payload: {
+                    room: i.id
+                  }
+                }
+                send(mes)
+              }
+              }>join</button>
             </div>
           )
         }
