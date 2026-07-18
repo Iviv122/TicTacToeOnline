@@ -25,8 +25,6 @@ const CommandPayload = t.Object({
   }),
 });
 
-
-
 roomManager.addEventListener("onAdd", () => {
   for (const client of clients) {
     sendRooms(client[1])
@@ -40,6 +38,7 @@ function sendRooms(user : User){
   } as Message
   user.sendMessage(mess)
 }
+
 function sendUsers(user : User){
   const users = []
   for (const i of clients.values()) {
@@ -54,6 +53,12 @@ function sendUsers(user : User){
   user.sendMessage(mess)
 }
 
+function onUsersChange() {
+  for (const i of clients.values()) {
+    sendUsers(i)
+  }
+}
+
 export const websocket_instance = (route: string) =>
   new Elysia().ws(route, {
     body: CommandPayload,
@@ -61,6 +66,7 @@ export const websocket_instance = (route: string) =>
       const user = new User(ws.id, `User_${ws.id.slice(0, 4)}`, ws.raw);
       clients.set(ws.id, user)
       sendRooms(user)
+      onUsersChange()
       sendUsers(user)
     },
     message(ws, message) {
@@ -68,6 +74,7 @@ export const websocket_instance = (route: string) =>
     },
     close(ws, code, reason) {
       clients.delete(ws.id)
+      onUsersChange()
       console.log(code, reason);
     },
   });
