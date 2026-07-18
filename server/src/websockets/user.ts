@@ -1,29 +1,10 @@
 import { Elysia, t } from "elysia";
 import { roomManager } from "../classes/room_manager";
-import { User } from "../types/user";
+import { Message, User } from "../classes/user";
+import { CommandPayload } from "../classes/command";
 
 const clients = new Map<string,User>()
 
-interface Message{
-  type: "rooms" | "users",
-  data: any,
-}
-
-const Command = t.Union([
-  t.Literal("join"),
-  t.Literal("mark"),
-  t.Literal("leave"),
-  t.Literal("rematch"),
-]);
-
-const CommandPayload = t.Object({
-  command: Command,
-  payload: t.Object({
-    room: t.Optional(t.String()),
-    target: t.Optional(t.String()),
-    text: t.Optional(t.String()),
-  }),
-});
 
 roomManager.addEventListener("onAdd", () => {
   for (const client of clients) {
@@ -36,6 +17,7 @@ function sendRooms(user : User){
     type: 'rooms',
     data : roomManager.get_rooms()
   } as Message
+
   user.sendMessage(mess)
 }
 

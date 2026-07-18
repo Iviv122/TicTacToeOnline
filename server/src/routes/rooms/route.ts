@@ -8,7 +8,7 @@ export const room_route = new Elysia({ prefix: "/room" })
     return roomManager.get_rooms();
   })
   .post("add", ({ body: { name } }) => {
-    const room = roomManager.add_room(name)
+    const room = roomManager.create_room(name)
     return room
   }, {
     body: t.Object({

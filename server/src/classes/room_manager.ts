@@ -1,5 +1,5 @@
 import { randomUUIDv7 } from "bun";
-import { Room } from "../types/room";
+import { Room } from "./room";
 
 
 class RoomManager extends EventTarget {
@@ -11,7 +11,7 @@ class RoomManager extends EventTarget {
   private _onAdd: Event = new Event('onAdd');
   private rooms: Room[] = [];
 
-  add_room(room_name: string) {
+  create_room(room_name: string) {
     const room = new Room(room_name,randomUUIDv7());
     this.rooms.push(room);
     this.dispatchEvent(this._onAdd)

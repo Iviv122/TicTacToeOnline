@@ -15,7 +15,13 @@ export class User {
     public ws: ServerWebSocket<WS>,
   ) { }
 
-  sendMessage(mess : string | BufferSource) {
+  sendMessage(mess : Message): void {
     this.ws.send(JSON.stringify(mess))
   }
+}
+
+export interface Message{
+  type: "rooms" // list of rooms
+      | "users",// list of users
+  data: any,
 }
