@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 function App() {
   const wsRef = useRef(null);
   const [roomCount, setRoomCount] = useState(0);
+  const [rooms, setRooms] = useState([]);
   const [usersCount, setUsersCount] = useState(0);
 
   useEffect(() => {
@@ -13,11 +14,12 @@ function App() {
       const mess = JSON.parse(event.data);
       if (mess.type === "rooms") {
         setRoomCount(mess.data.length);
+        setRooms(mess.data);
       }
       if (mess.type === "users") {
-        console.log(mess)
         setUsersCount(mess.data.length);
       }
+      console.log(mess)
     };
 
     socket.onerror = (err) => {
@@ -38,6 +40,15 @@ function App() {
       <div>Hi</div>
       <div>rooms count: {roomCount}</div>
       <div>users online: {usersCount}</div>
+      <div>
+        {
+          rooms.map((i) =>
+            <div>
+              {i.name}
+            </div>
+          )
+        }
+      </div>
     </div>
   );
 }
