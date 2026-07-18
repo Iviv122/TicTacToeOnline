@@ -22,8 +22,8 @@ function sendRooms(user : User){
 }
 function sendRoom(user : User,room: Room){
   const mess = {
-    type: 'rooms',
-    data : room
+    type: 'room',
+    data: room
   } as Message
   user.sendMessage(mess)
 }
@@ -55,7 +55,10 @@ function onUsersChange() {
 
 function UserJoinRoom(user: User, room_id : String) {
   const room = roomManager.get_rooms().find(i => i.id === room_id)
-  room?.users.push(user)
+  if (room) {
+    room.users.push(user)
+    onRoomUpdate(room)
+  }
 }
 
 function handleUserMessage(user : User,mess: CommandPayloadType) {

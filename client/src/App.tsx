@@ -19,7 +19,14 @@ function App() {
       if (mess.type === "users") {
         setUsersCount(mess.data.length);
       }
-      console.log(mess)
+      if (mess.type === "room") {
+        setRooms(prev => prev.map((i) => i.id === mess.data.id ?
+          mess.data
+          :
+          i
+        ))
+      }
+      console.log(mess);
     };
 
     socket.onerror = (err) => {
@@ -41,24 +48,25 @@ function App() {
       <div>rooms count: {roomCount}</div>
       <div>users online: {usersCount}</div>
       <div>
-        {
-          rooms.map((i) =>
-            <div>
-              <h3>{i.name}</h3>
-              <p>users: {i.users.length}</p>
-              <button onClick={() => {
+        {rooms.map((i) => (
+          <div>
+            <h3>{i.name}</h3>
+            <p>users: {i.users.length}</p>
+            <button
+              onClick={() => {
                 const mes = {
                   command: "join",
                   payload: {
-                    room: i.id
-                  }
-                }
-                send(mes)
-              }
-              }>join</button>
-            </div>
-          )
-        }
+                    room: i.id,
+                  },
+                };
+                send(mes);
+              }}
+            >
+              join
+            </button>
+          </div>
+        ))}
       </div>
     </div>
   );

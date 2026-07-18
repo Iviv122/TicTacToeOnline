@@ -22,6 +22,7 @@ export class User {
 
 export interface Message{
   type: "rooms" // list of rooms
-      | "users",// list of users
+  | "users"// list of users
+  | "room" // room updated
   data: any,
 }
