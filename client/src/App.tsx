@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import CreateRoom from "./components/create_room";
 
 function App() {
   const wsRef = useRef(null);
@@ -42,6 +43,7 @@ function App() {
 
   return (
     <div>
+      <CreateRoom/>
       <div>Hi</div>
       <div>rooms count: {roomCount}</div>
       <div>users online: {usersCount}</div>

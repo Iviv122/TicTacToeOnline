@@ -7,10 +7,13 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "openapi" : "npx openapi-typescript http://localhost:3000/openapi/json -o schema.d.ts",
+    "openapi": "npx openapi-typescript http://localhost:3000/openapi/json -o schema.d.ts",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.101.2",
+    "openapi-fetch": "^0.17.0",
+    "openapi-react-query": "^0.5.4",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   },
