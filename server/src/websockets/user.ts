@@ -56,7 +56,7 @@ function onUsersChange() {
 function UserJoinRoom(user: User, room_id : String) {
   const room = roomManager.get_rooms().find(i => i.id === room_id)
   if (room) {
-    room.users.push(user)
+    room.join(user)
     onRoomUpdate(room)
   }
 }
@@ -89,7 +89,9 @@ export const websocket_instance = (route: string) =>
       }
     },
     close(ws, code, reason) {
+      clients.get(ws.id)?.close()
       clients.delete(ws.id)
+
       onUsersChange()
       console.log(code, reason);
     },
