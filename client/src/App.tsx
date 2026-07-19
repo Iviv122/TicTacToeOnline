@@ -20,11 +20,9 @@ function App() {
         setUsersCount(mess.data.length);
       }
       if (mess.type === "room") {
-        setRooms(prev => prev.map((i) => i.id === mess.data.id ?
-          mess.data
-          :
-          i
-        ))
+        setRooms((prev) =>
+          prev.map((i) => (i.id === mess.data.id ? mess.data : i)),
+        );
       }
       console.log(mess);
     };
