@@ -7,7 +7,12 @@ import { Room } from "../classes/room";
 const clients = new Map<string,User>()
 
 
-roomManager.addEventListener("onAdd", () => {
+roomManager.addListener("onRoomUpdate", (room) => {
+  for (const client of clients) {
+    sendRoom(client[1], room)
+  }
+});
+roomManager.addListener("update", () => {
   for (const client of clients) {
     sendRooms(client[1])
   }
@@ -53,8 +58,8 @@ function onUsersChange() {
   }
 }
 
-function UserJoinRoom(user: User, room_id : String) {
-  const room = roomManager.get_rooms().find(i => i.id === room_id)
+function UserJoinRoom(user: User, room_id: string) {
+  const room = roomManager.get_room(room_id)
   if (room) {
     room.join(user)
     onRoomUpdate(room)
@@ -78,7 +83,6 @@ export const websocket_instance = (route: string) =>
       clients.set(ws.id, user)
       sendRooms(user)
       onUsersChange()
-      sendUsers(user)
     },
     message(ws, message) {
       ws.send(message);
@@ -89,9 +93,11 @@ export const websocket_instance = (route: string) =>
       }
     },
     close(ws, code, reason) {
-      clients.get(ws.id)?.close()
-      clients.delete(ws.id)
-
+      const client = clients.get(ws.id)
+      if (client) {
+        client.close()
+        clients.delete(ws.id)
+      }
       onUsersChange()
       console.log(code, reason);
     },

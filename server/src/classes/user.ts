@@ -2,6 +2,7 @@ import { ServerWebSocket } from "bun";
 import { t, TSchema } from "elysia";
 import { TypeCheck } from "elysia/dist/type-system";
 import { register_model } from "../models";
+import { EventEmitter } from "node:events";
 
 
 interface WS{
@@ -9,7 +10,7 @@ interface WS{
   validator?: TypeCheck<TSchema> | undefined;
 }
 
-export class User extends EventTarget {
+export class User extends EventEmitter {
   constructor(
     public id: string,
     public name: string,
@@ -18,9 +19,9 @@ export class User extends EventTarget {
     super()
   }
 
-  private _onClose: Event = new Event('onClose');
   close(): void{
-    this.dispatchEvent(this._onClose)
+    this.emit("close", this)
+    this.removeAllListeners()
   }
 
   sendMessage(mess : Message): void {
