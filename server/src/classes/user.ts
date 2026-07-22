@@ -19,9 +19,14 @@ export class User extends EventEmitter {
     super()
   }
 
+  // use when socket is closed
   close(): void{
     this.emit("close", this)
-    this.removeAllListeners()
+  }
+
+  // leave from game/room
+  leave(): void{
+    this.emit("leave",this)
   }
 
   sendMessage(mess : Message): void {
@@ -39,7 +44,7 @@ export const MessageSchema = t.Object({
   type: t.Union([
     t.Literal('rooms'),
     t.Literal('users'),
-    t.Literal('room')
+    t.Literal('room'),
   ]),
   data: t.Any()
 })

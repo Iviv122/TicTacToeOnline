@@ -6,6 +6,7 @@ function App() {
   const [roomCount, setRoomCount] = useState(0);
   const [rooms, setRooms] = useState([]);
   const [usersCount, setUsersCount] = useState(0);
+  const [join, setJoin] = useState("");
 
   useEffect(() => {
     const socket = new WebSocket("ws://localhost:3000/ws");
@@ -43,13 +44,13 @@ function App() {
 
   return (
     <div>
-      <CreateRoom/>
+      <CreateRoom />
       <div>Hi</div>
       <div>rooms count: {roomCount}</div>
       <div>users online: {usersCount}</div>
       <div>
         {rooms.map((i) => (
-          <div>
+          <div key={i.id}>
             <h3>{i.name}</h3>
             <p>users: {i.users.length}</p>
             <button
@@ -60,11 +61,27 @@ function App() {
                     room: i.id,
                   },
                 };
+                setJoin(i.id);
                 send(mes);
               }}
             >
               join
             </button>
+            {i.id === join ? (
+              <button
+                onClick={() => {
+                  const mes = {
+                    command: "leave",
+                  };
+                  send(mes);
+                  setJoin("");
+                }}
+              >
+                leave
+              </button>
+            ) : (
+              <></>
+            )}
           </div>
         ))}
       </div>

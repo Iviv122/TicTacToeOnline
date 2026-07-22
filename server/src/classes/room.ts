@@ -1,26 +1,36 @@
 import { t } from "elysia";
-import EventEmitter from 'node:events';
+import EventEmitter from "node:events";
 import { User, UserSchema } from "./user";
 import { register_model } from "../models";
 
-export class Room extends EventEmitter{
+export class Room extends EventEmitter {
   id: String;
   name: String;
   users: Set<User>;
 
   constructor(name: string, id: string) {
-    super()
+    super();
     this.id = id;
     this.name = name;
     this.users = new Set<User>();
   }
   join(user: User) {
+    console.log(this.users.size);
+    if (this.users.has(user)) {
+      return;
+    }
+    const room = this;
     this.users.add(user);
-    user.once('close', () => {
-      this.users.delete(user)
-      this.emit("update",this)
-    })
-    this.emit("update",this)
+    user.once("close", () => {
+      this.users.delete(user);
+      this.emit("update", room);
+    });
+    user.once("leave", () => {
+      this.users.delete(user);
+      this.emit("update", room);
+    });
+
+    this.emit("update", room);
   }
   user_count(): number {
     return this.users.size;
@@ -32,9 +42,7 @@ export class Room extends EventEmitter{
       users: [...this.users],
     };
   }
-
 }
-
 
 export const RoomSchema = t.Object({
   id: t.String(),

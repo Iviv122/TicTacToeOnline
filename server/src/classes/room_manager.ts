@@ -9,14 +9,14 @@ class RoomManager extends EventEmitter {
 
   private rooms: Set<Room> = new Set<Room>();
 
-  room_updated(room : Room) {
-    this.emit("room_update")
+  room_updated(room: Room) {
+    this.emit("room_update",room)
   }
 
   create_room(room_name: string) {
     const room = new Room(room_name, randomUUIDv7());
 
-    room.addListener("update", this.room_updated)
+    room.on("update", (room) => this.room_updated(room))
 
     this.rooms.add(room);
     this.emit("update");

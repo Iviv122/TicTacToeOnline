@@ -6,17 +6,8 @@ import { Room } from "../classes/room";
 
 const clients = new Map<string,User>()
 
-
-roomManager.addListener("onRoomUpdate", (room) => {
-  for (const client of clients) {
-    sendRoom(client[1], room)
-  }
-});
-roomManager.addListener("update", () => {
-  for (const client of clients) {
-    sendRooms(client[1])
-  }
-});
+roomManager.on("room_update", onRoomUpdate);
+roomManager.on("update", onRoomsUpdate);
 
 function sendRooms(user : User){
   const mess = {
@@ -33,7 +24,14 @@ function sendRoom(user : User,room: Room){
   user.sendMessage(mess)
 }
 
-function onRoomUpdate(room : Room) {
+function onRoomsUpdate() {
+  for (const client of clients.values()) {
+    sendRooms(client)
+  }
+}
+function onRoomUpdate(room: Room) {
+
+  console.log("updated room!")
   for (const client of clients.values()) {
     sendRoom(client, room)
   }
@@ -48,7 +46,6 @@ function sendUsers(user : User){
     type: 'users',
     data: users
   } as Message
-  console.log(mess)
   user.sendMessage(mess)
 }
 
