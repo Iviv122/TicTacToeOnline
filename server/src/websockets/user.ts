@@ -4,71 +4,74 @@ import { Message, User } from "../classes/user";
 import { CommandPayload, CommandPayloadType } from "../classes/command";
 import { Room } from "../classes/room";
 
-const clients = new Map<string,User>()
+const clients = new Map<string, User>();
 
 roomManager.on("room_update", onRoomUpdate);
 roomManager.on("update", onRoomsUpdate);
 
-function sendRooms(user : User){
+function sendRooms(user: User) {
   const mess = {
-    type: 'rooms',
-    data : roomManager.get_rooms()
-  } as Message
-  user.sendMessage(mess)
+    type: "rooms",
+    data: roomManager.get_rooms(),
+  } as Message;
+  user.sendMessage(mess);
 }
-function sendRoom(user : User,room: Room){
+function sendRoom(user: User, room: Room) {
   const mess = {
-    type: 'room',
-    data: room
-  } as Message
-  user.sendMessage(mess)
+    type: "room",
+    data: room,
+  } as Message;
+  user.sendMessage(mess);
 }
 
 function onRoomsUpdate() {
   for (const client of clients.values()) {
-    sendRooms(client)
+    sendRooms(client);
   }
 }
 function onRoomUpdate(room: Room) {
-
-  console.log("updated room!")
+  console.log("updated room!");
   for (const client of clients.values()) {
-    sendRoom(client, room)
+    sendRoom(client, room);
   }
 }
 
-function sendUsers(user : User){
-  const users = []
+function sendUsers(user: User) {
+  const users = [];
   for (const i of clients.values()) {
-    users.push(i)
+    users.push(i);
   }
   const mess = {
-    type: 'users',
-    data: users
-  } as Message
-  user.sendMessage(mess)
+    type: "users",
+    data: users,
+  } as Message;
+  user.sendMessage(mess);
 }
 
 function onUsersChange() {
   for (const i of clients.values()) {
-    sendUsers(i)
+    sendUsers(i);
   }
 }
 
 function UserJoinRoom(user: User, room_id: string) {
-  const room = roomManager.get_room(room_id)
+  const room = roomManager.get_room(room_id);
   if (room) {
-    room.join(user)
-    onRoomUpdate(room)
+    room.join(user);
+    onRoomUpdate(room);
   }
 }
 
-function handleUserMessage(user : User,mess: CommandPayloadType) {
+function handleUserMessage(user: User, mess: CommandPayloadType) {
+  console.log(mess.command)
   switch (mess.command) {
     case "join":
-      UserJoinRoom(user, mess.payload.room || "")
+      user.leave() // make sure to leave
+      UserJoinRoom(user, mess.payload.room || "");
       return;
-
+    case "leave":
+      user.leave();
+      return;
   }
 }
 
@@ -77,25 +80,25 @@ export const websocket_instance = (route: string) =>
     body: CommandPayload,
     open(ws) {
       const user = new User(ws.id, `User_${ws.id.slice(0, 4)}`, ws.raw);
-      clients.set(ws.id, user)
-      sendRooms(user)
-      onUsersChange()
+      clients.set(ws.id, user);
+      sendRooms(user);
+      onUsersChange();
     },
     message(ws, message) {
       ws.send(message);
-      console.log(message)
-      const user = clients.get(ws.id)
+      console.log(message);
+      const user = clients.get(ws.id);
       if (user) {
-        handleUserMessage(user, message)
+        handleUserMessage(user, message);
       }
     },
     close(ws, code, reason) {
-      const client = clients.get(ws.id)
+      const client = clients.get(ws.id);
       if (client) {
-        client.close()
-        clients.delete(ws.id)
+        client.close();
+        clients.delete(ws.id);
       }
-      onUsersChange()
+      onUsersChange();
       console.log(code, reason);
     },
   });

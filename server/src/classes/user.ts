@@ -21,12 +21,14 @@ export class User extends EventEmitter {
 
   // use when socket is closed
   close(): void{
+    console.log("user is closing")
     this.emit("close", this)
   }
 
   // leave from game/room
   leave(): void{
-    this.emit("leave",this)
+    console.log("user is leaving")
+    this.emit("leave", this)
   }
 
   sendMessage(mess : Message): void {

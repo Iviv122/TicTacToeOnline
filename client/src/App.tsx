@@ -72,6 +72,9 @@ function App() {
                 onClick={() => {
                   const mes = {
                     command: "leave",
+                    payload: {
+
+                    }
                   };
                   send(mes);
                   setJoin("");

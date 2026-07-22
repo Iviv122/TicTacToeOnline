@@ -21,13 +21,21 @@ export class Room extends EventEmitter {
     }
     const room = this;
     this.users.add(user);
-    user.once("close", () => {
+    user.once("close", (_user: User) => {
+      if (!this.users.has(user)) {
+        return;
+      }
       this.users.delete(user);
       this.emit("update", room);
+      console.log("user disconnected");
     });
-    user.once("leave", () => {
+    user.once("leave", (_user: User) => {
+      if (!this.users.has(user)) {
+        return;
+      }
       this.users.delete(user);
       this.emit("update", room);
+      console.log("user left");
     });
 
     this.emit("update", room);
