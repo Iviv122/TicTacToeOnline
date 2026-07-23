@@ -4,9 +4,12 @@ import { websocket_instance } from "./websockets/user";
 import cors from "@elysia/cors";
 import { roomRoute } from "./routes/rooms/route";
 import { models } from "./models";
+import { MessageSchema } from "./classes/message";
+
 
 export const app = new Elysia()
   .model(models)
+  .model("MessageSchema", MessageSchema) // it is required TwT
   .use(
     openapi({
       references: fromTypes(

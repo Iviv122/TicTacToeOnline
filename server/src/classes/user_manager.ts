@@ -56,7 +56,9 @@ class UserManager {
     const count = this.userCount();
     const mess = {
       type: "users",
-      data: count,
+      data: {
+        users_count: count,
+      },
     } as Message;
     user.sendMessage(mess);
   }

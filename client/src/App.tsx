@@ -15,8 +15,8 @@ function App() {
 
     socket.onmessage = (event) => {
       const mess = JSON.parse(event.data);
-      if (mess.type === 'connection') {
-        setId(mess.data)
+      if (mess.type === "connection") {
+        setId(mess.data);
       }
       if (mess.type === "rooms") {
         setRoomCount(mess.data.length);
@@ -29,6 +29,9 @@ function App() {
         setRooms((prev) =>
           prev.map((i) => (i.id === mess.data.id ? mess.data : i)),
         );
+      }
+      if (mess.type === "join") {
+        setJoin(mess.data)
       }
       console.log(mess);
     };
@@ -47,11 +50,7 @@ function App() {
   }, []);
 
   if (user_id.trim() === "") {
-    return (
-      <h1>
-          Wait for connection id
-      </h1>
-    )
+    return <h1>Wait for connection id</h1>;
   }
 
   return (
@@ -84,9 +83,7 @@ function App() {
                 onClick={() => {
                   const mes = {
                     command: "leave",
-                    payload: {
-
-                    }
+                    payload: {},
                   };
                   send(mes);
                   setJoin("");
