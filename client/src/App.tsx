@@ -8,17 +8,24 @@ function App() {
   const [rooms, setRooms] = useState([]);
   const [usersCount, setUsersCount] = useState(0);
   const [join, setJoin] = useState("");
-  const [user_id, setId] = useState("");
+  const [userId, setUserId] = useState("");
+  const [userName, setUserName] = useState("");
 
   useEffect(() => {
     const socket = new WebSocket("ws://localhost:3000/ws");
     wsRef.current = socket;
 
     socket.onmessage = (event) => {
-      const mess = JSON.parse(event.data) as components["schemas"]["MessageSchema"];
-      console.log(mess)
+      const mess = JSON.parse(
+        event.data,
+      ) as components["schemas"]["MessageSchema"];
+
+      if (mess.type === "rename") {
+        setUserName(mess.data.new_name);
+      }
       if (mess.type === "connection") {
-        setId(mess.data.connection_id);
+        setUserId(mess.data.connection_id);
+        setUserName(mess.data.new_name);
       }
       if (mess.type === "rooms") {
         setRoomCount(mess.data.rooms.length);
@@ -33,7 +40,7 @@ function App() {
         );
       }
       if (mess.type === "join") {
-        setJoin(mess.data.room_id)
+        setJoin(mess.data.room_id);
       }
       console.log(mess);
     };
@@ -51,14 +58,15 @@ function App() {
     wsRef.current?.send(JSON.stringify(data));
   }, []);
 
-  if (user_id.trim() === "") {
+  if (userId.trim() === "") {
     return <h1>Wait for connection id</h1>;
   }
 
   return (
     <div>
       <CreateRoom send={send} />
-      <p>Your connection id: {user_id}</p>
+      <p>Your connection id: {userId}</p>
+      <p>Your username: {userName}</p>
       <div>rooms count: {roomCount}</div>
       <div>users online: {usersCount}</div>
       <div>

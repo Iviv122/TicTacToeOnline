@@ -3,6 +3,7 @@ import { register_model } from "../models";
 
 export const Command = t.Union([
   t.Literal("join"),
+  t.Literal("rename"),
   t.Literal("create"),
   t.Literal("mark"),
   t.Literal("leave"),

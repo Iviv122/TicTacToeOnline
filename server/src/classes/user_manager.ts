@@ -98,7 +98,7 @@ function sendRooms(user: User) {
   const mess = {
     type: "rooms",
     data: {
-      rooms: roomManager.get_rooms().map(i => i.toJSON()),
+      rooms: roomManager.get_rooms().map((i) => i.toJSON()),
     },
   } as Message;
 
@@ -113,11 +113,19 @@ function sendRoom(user: User, room: Room) {
   } as Message;
   user.sendMessage(mess);
 }
+function userUpdate(user: User) {
+  const mess = {
+    type: "rename",
+    data: {
+      new_name: user.name,
+    },
+  } as Message;
+}
 function sendJoin(user: User, room: Room) {
   const mess = {
     type: "join",
     data: {
-      room_id: room.id
+      room_id: room.id,
     },
   } as Message;
   user.sendMessage(mess);
@@ -126,6 +134,7 @@ function sendId(user: User) {
   const mess = {
     type: "connection",
     data: {
+      new_name: user.name,
       connection_id: user.id,
     },
   } as Message;

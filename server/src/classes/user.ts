@@ -35,6 +35,11 @@ export class User extends EventEmitter {
     this.emit("leave", this)
   }
 
+  rename(new_name: string): void{
+    this.name = new_name
+    this.emit("update",this)
+  }
+
   sendMessage(mess : Message): void {
     this.ws.send(JSON.stringify(mess))
   }

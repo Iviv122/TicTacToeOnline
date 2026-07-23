@@ -45,10 +45,10 @@ export interface components {
             name: string;
         };
         /** @enum {string} */
-        Command: "join" | "create" | "mark" | "leave" | "rematch";
+        Command: "join" | "rename" | "create" | "mark" | "leave" | "rematch";
         CommandPayload: {
             /** @enum {string} */
-            command: "join" | "create" | "mark" | "leave" | "rematch";
+            command: "join" | "rename" | "create" | "mark" | "leave" | "rematch";
             payload: {
                 name?: string;
                 room?: string;
@@ -66,8 +66,9 @@ export interface components {
         };
         MessageSchema: {
             /** @enum {string} */
-            type: "connection" | "join" | "rooms" | "users" | "room";
+            type: "connection" | "rename" | "join" | "rooms" | "users" | "room";
             data: {
+                new_name?: string;
                 connection_id?: string;
                 room?: {
                     id: string;

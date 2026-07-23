@@ -5,12 +5,14 @@ import { RoomSchema } from "./room";
 export const MessageSchema = t.Object({
   type: t.Union([
     t.Literal("connection"), // way to get id
+    t.Literal("rename"),
     t.Literal("join"), // force
     t.Literal("rooms"),
     t.Literal("users"),
     t.Literal("room"),
   ]),
   data: t.Object({
+    new_name: t.Optional(t.String()),
     connection_id: t.Optional(t.String()),
     room: t.Optional(RoomSchema),
     rooms: t.Optional(t.Array(RoomSchema)),
