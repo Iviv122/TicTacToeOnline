@@ -60,19 +60,6 @@ export interface components {
             id: string;
             name: string;
         };
-        MessageSchema: {
-            /** @enum {string} */
-            type: "rooms" | "users" | "room";
-            data: unknown;
-        };
-        RoomSchema: {
-            id: string;
-            name: string;
-            users: {
-                id: string;
-                name: string;
-            }[];
-        };
         /** @enum {string} */
         Command: "join" | "mark" | "leave" | "rematch";
         CommandPayload: {
@@ -83,6 +70,14 @@ export interface components {
                 target?: string;
                 text?: string;
             };
+        };
+        RoomSchema: {
+            id: string;
+            name: string;
+            users: {
+                id: string;
+                name: string;
+            }[];
         };
     };
     responses: never;
@@ -114,12 +109,15 @@ export interface operations {
             content: {
                 "application/json": {
                     name: string;
+                    owner_id: string;
                 };
                 "application/x-www-form-urlencoded": {
                     name: string;
+                    owner_id: string;
                 };
                 "multipart/form-data": {
                     name: string;
+                    owner_id: string;
                 };
             };
         };

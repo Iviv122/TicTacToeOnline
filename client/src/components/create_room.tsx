@@ -1,31 +1,31 @@
 import { useState } from "react";
-import { $api } from "../api/client";
 
-export default function CreateRoom() {
-  const [name, setName] = useState("");
+interface CreateRoomProps {
+  send: (mess: object) => void;
+}
 
-  const { mutate } = $api.useMutation('post', '/api/room/add')
-
+export default function CreateRoom({ send }: CreateRoomProps) {
+  const [roomName, setRoomName] = useState("");
 
   return (
     <div>
       <input
         type="text"
-        value={name}
-        onChange={e => setName(e.target.value)}
+        value={roomName}
+        onChange={(e) => setRoomName(e.target.value)}
       />
       <input
         type="button"
         value="Submit"
-        onClick={
-        () => mutate(
-          {
-            body: {
-              name: name
-            }
-          }
-        )
-      }/>
+        onClick={() =>
+          send({
+            command: "create",
+            payload: {
+              name: roomName,
+            },
+          })
+        }
+      />
     </div>
   );
 }

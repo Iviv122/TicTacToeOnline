@@ -7,13 +7,25 @@ export class Room extends EventEmitter {
   id: String;
   name: String;
   users: Set<User>;
+  owner: User;
 
-  constructor(name: string, id: string) {
+  constructor(name: string, id: string, owner: User) {
     super();
     this.id = id;
     this.name = name;
     this.users = new Set<User>();
+    this.owner = owner;
+
+    this.join(owner);
+    // TODO: remove room on last user or owner leave
   }
+
+  disband_room() {
+    for (const i of this.users.values()) {
+      i.leave();
+    }
+  }
+
   join(user: User) {
     console.log(this.users.size);
     if (this.users.has(user)) {
@@ -40,6 +52,9 @@ export class Room extends EventEmitter {
 
     this.emit("update", room);
   }
+
+  player_turn() {}
+
   user_count(): number {
     return this.users.size;
   }

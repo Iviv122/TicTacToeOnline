@@ -3,6 +3,7 @@ import { t, TSchema } from "elysia";
 import { TypeCheck } from "elysia/dist/type-system";
 import { register_model } from "../models";
 import { EventEmitter } from "node:events";
+import { Message } from "./message";
 
 
 interface WS{
@@ -19,20 +20,29 @@ export class User extends EventEmitter {
     super()
   }
 
+  // make turn
+  mark(): void {
+
+  }
+
   // use when socket is closed
   close(): void{
-    console.log("user is closing")
     this.emit("close", this)
   }
 
   // leave from game/room
   leave(): void{
-    console.log("user is leaving")
     this.emit("leave", this)
   }
 
   sendMessage(mess : Message): void {
     this.ws.send(JSON.stringify(mess))
+  }
+  toJSON() {
+    return {
+      id: this.id,
+      name: this.name
+    }
   }
 }
 
@@ -41,15 +51,3 @@ export const UserSchema = t.Object({
   name: t.String()
 })
 register_model("UserSchema", UserSchema)
-
-export const MessageSchema = t.Object({
-  type: t.Union([
-    t.Literal('rooms'),
-    t.Literal('users'),
-    t.Literal('room'),
-  ]),
-  data: t.Any()
-})
-register_model("MessageSchema", MessageSchema)
-
-export type Message = typeof MessageSchema.static
