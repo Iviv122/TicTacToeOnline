@@ -36,22 +36,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/room/add": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["postApiRoomAdd"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -61,11 +45,12 @@ export interface components {
             name: string;
         };
         /** @enum {string} */
-        Command: "join" | "mark" | "leave" | "rematch";
+        Command: "join" | "create" | "mark" | "leave" | "rematch";
         CommandPayload: {
             /** @enum {string} */
-            command: "join" | "mark" | "leave" | "rematch";
+            command: "join" | "create" | "mark" | "leave" | "rematch";
             payload: {
+                name?: string;
                 room?: string;
                 target?: string;
                 text?: string;
@@ -78,6 +63,31 @@ export interface components {
                 id: string;
                 name: string;
             }[];
+        };
+        MessageSchema: {
+            /** @enum {string} */
+            type: "connection" | "join" | "rooms" | "users" | "room";
+            data: {
+                connection_id?: string;
+                room?: {
+                    id: string;
+                    name: string;
+                    users: {
+                        id: string;
+                        name: string;
+                    }[];
+                };
+                rooms?: {
+                    id: string;
+                    name: string;
+                    users: {
+                        id: string;
+                        name: string;
+                    }[];
+                }[];
+                room_id?: string;
+                users_count?: number;
+            };
         };
     };
     responses: never;
@@ -96,31 +106,6 @@ export interface operations {
             cookie?: never;
         };
         requestBody?: never;
-        responses: never;
-    };
-    postApiRoomAdd: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    name: string;
-                    owner_id: string;
-                };
-                "application/x-www-form-urlencoded": {
-                    name: string;
-                    owner_id: string;
-                };
-                "multipart/form-data": {
-                    name: string;
-                    owner_id: string;
-                };
-            };
-        };
         responses: never;
     };
 }

@@ -12,6 +12,7 @@ class RoomManager extends EventEmitter {
 
   create_room(room_name: string, owner: User): Room {
     const room = new Room(room_name, randomUUIDv7(), owner);
+
     room.on("update", () => this.handleRoomUpdate(room));
     this.rooms.add(room);
     this.emit("update");

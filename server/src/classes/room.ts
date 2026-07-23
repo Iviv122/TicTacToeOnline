@@ -60,8 +60,8 @@ export class Room extends EventEmitter {
   }
   toJSON() {
     return {
-      id: this.id,
-      name: this.name,
+      id: this.id as string,
+      name: this.name as string,
       users: [...this.users],
     };
   }

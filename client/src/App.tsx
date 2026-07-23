@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import CreateRoom from "./components/create_room";
+import type { components } from "./schema";
 
 function App() {
   const wsRef = useRef(null);
@@ -14,24 +15,25 @@ function App() {
     wsRef.current = socket;
 
     socket.onmessage = (event) => {
-      const mess = JSON.parse(event.data);
+      const mess = JSON.parse(event.data) as components["schemas"]["MessageSchema"];
+      console.log(mess)
       if (mess.type === "connection") {
-        setId(mess.data);
+        setId(mess.data.connection_id);
       }
       if (mess.type === "rooms") {
-        setRoomCount(mess.data.length);
-        setRooms(mess.data);
+        setRoomCount(mess.data.rooms.length);
+        setRooms(mess.data.rooms);
       }
       if (mess.type === "users") {
-        setUsersCount(mess.data);
+        setUsersCount(mess.data.users_count);
       }
       if (mess.type === "room") {
         setRooms((prev) =>
-          prev.map((i) => (i.id === mess.data.id ? mess.data : i)),
+          prev.map((i) => (i.id === mess.data.room.id ? mess.data : i)),
         );
       }
       if (mess.type === "join") {
-        setJoin(mess.data)
+        setJoin(mess.data.room_id)
       }
       console.log(mess);
     };

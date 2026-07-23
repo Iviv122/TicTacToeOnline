@@ -62,8 +62,8 @@ class UserManager {
     } as Message;
     user.sendMessage(mess);
   }
-  UserJoinRoom(user: User, room_id: string) {
-    const room = roomManager.get_room(room_id);
+  UserJoinRoom(user: User, room_id: string | String) {
+    const room = roomManager.get_room(room_id as string);
     if (room) {
       room.join(user);
       roomUpdated(userManager, room);
@@ -82,7 +82,7 @@ class UserManager {
       case "create":
         if (mess.payload.name) {
           if (mess.payload.name?.trim() !== "") {
-            roomManager.create_room(mess.payload.name, user);
+            sendJoin(user, roomManager.create_room(mess.payload.name, user));
           }
         }
         return;
@@ -97,21 +97,37 @@ export const userManager = new UserManager();
 function sendRooms(user: User) {
   const mess = {
     type: "rooms",
-    data: roomManager.get_rooms(),
+    data: {
+      rooms: roomManager.get_rooms().map(i => i.toJSON()),
+    },
   } as Message;
+
   user.sendMessage(mess);
 }
 function sendRoom(user: User, room: Room) {
   const mess = {
     type: "room",
-    data: room,
+    data: {
+      room: room.toJSON(),
+    },
+  } as Message;
+  user.sendMessage(mess);
+}
+function sendJoin(user: User, room: Room) {
+  const mess = {
+    type: "join",
+    data: {
+      room_id: room.id
+    },
   } as Message;
   user.sendMessage(mess);
 }
 function sendId(user: User) {
   const mess = {
     type: "connection",
-    data: user.id,
+    data: {
+      connection_id: user.id,
+    },
   } as Message;
   user.sendMessage(mess);
 }
