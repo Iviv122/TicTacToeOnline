@@ -58,6 +58,10 @@ export interface components {
         };
         RoomSchema: {
             id: string;
+            owner: {
+                id: string;
+                name: string;
+            };
             name: string;
             users: {
                 id: string;
@@ -72,6 +76,10 @@ export interface components {
                 connection_id?: string;
                 room?: {
                     id: string;
+                    owner: {
+                        id: string;
+                        name: string;
+                    };
                     name: string;
                     users: {
                         id: string;
@@ -80,6 +88,10 @@ export interface components {
                 };
                 rooms?: {
                     id: string;
+                    owner: {
+                        id: string;
+                        name: string;
+                    };
                     name: string;
                     users: {
                         id: string;

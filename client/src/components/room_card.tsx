@@ -9,17 +9,12 @@ interface RoomCardProps {
 export default function RoomCard({ room, join}: RoomCardProps) {
   useEffect(() => {
     console.log(room)
-  },[])
+  })
   return (
     <div className="border">
       <p>{room.name}</p>
+      <p>owner: {room.owner.name}</p>
       <p>users in: {room.users?.length}</p>
-      <div>
-        users:
-        {room.users?.map((user) => (
-          <p key={user.id}>{user.name}</p>
-        ))}
-      </div>
       <p>id: {room.id}</p>
         <button onClick={join}>join</button>
     </div>
