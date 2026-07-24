@@ -86,6 +86,12 @@ class UserManager {
           }
         }
         return;
+      case "rename":
+        if (mess.payload.name) {
+          user.rename(mess.payload.name);
+          userUpdate(user)
+        }
+        return;
       default:
         console.log(mess.command + " Message type undefined");
         return;
@@ -120,6 +126,7 @@ function userUpdate(user: User) {
       new_name: user.name,
     },
   } as Message;
+  user.sendMessage(mess)
 }
 function sendJoin(user: User, room: Room) {
   const mess = {

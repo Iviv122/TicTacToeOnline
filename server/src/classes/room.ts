@@ -17,13 +17,23 @@ export class Room extends EventEmitter {
     this.owner = owner;
 
     this.join(owner);
-    // TODO: remove room on last user or owner leave
+    this.addListener("update", () => {
+      if (this.users.size === 0) {
+        this.destroy();
+      }
+    });
   }
 
   disband_room() {
     for (const i of this.users.values()) {
       i.leave();
     }
+    this.destroy();
+  }
+
+  destroy() {
+    this.users.clear();
+    this.emit("end", self);
   }
 
   join(user: User) {

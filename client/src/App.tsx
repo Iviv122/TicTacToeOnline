@@ -3,6 +3,7 @@ import CreateRoom from "./components/create_room";
 import type { components } from "./schema";
 import RoomCard from "./components/room_card";
 import LobbyRoom from "./components/lobby_room";
+import UserRename from "./components/user_rename";
 
 function App() {
   const wsRef = useRef(null);
@@ -12,6 +13,7 @@ function App() {
   const [join, setJoin] = useState("");
   const [userId, setUserId] = useState("");
   const [userName, setUserName] = useState("");
+
 
   useEffect(() => {
     const socket = new WebSocket("ws://localhost:3000/ws");
@@ -84,6 +86,7 @@ function App() {
   return (
     <div>
       <CreateRoom send={send} />
+      <UserRename send={send}/>
       <p>Your connection id: {userId}</p>
       <p>Your username: {userName}</p>
       <div>rooms count: {roomCount}</div>

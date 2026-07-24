@@ -4,12 +4,12 @@ interface CreateRoomProps {
   send: (mess: object) => void;
 }
 
-export default function CreateRoom({ send }: CreateRoomProps) {
+export default function UserRename({ send }: CreateRoomProps) {
   const [roomName, setRoomName] = useState("");
 
   return (
     <div>
-      <span>create room</span>
+      <span>rename</span>
       <input
         type="text"
         value={roomName}
@@ -20,7 +20,7 @@ export default function CreateRoom({ send }: CreateRoomProps) {
         value="Submit"
         onClick={() =>
           send({
-            command: "create",
+            command: "rename",
             payload: {
               name: roomName,
             },

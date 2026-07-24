@@ -10,6 +10,11 @@ export default function LobbyRoom({ room,leave } : RoomProps) {
     <div>
       <h1>Room : {room.name}</h1>
       <button onClick={leave}>leave</button>
+      <ul>
+        {
+          room.users.map(i => <li key={i.id}>{i.name}</li>)
+        }
+      </ul>
     </div>
   )
 }
