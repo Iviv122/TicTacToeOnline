@@ -14,13 +14,18 @@ class RoomManager extends EventEmitter {
     const room = new Room(room_name, randomUUIDv7(), owner);
 
     room.on("update", () => this.handleRoomUpdate(room));
+    room.on("end", (room) => this.removeRoom(room))
+
     this.rooms.add(room);
     this.emit("update");
+
+
     return room;
   }
 
   removeRoom(room: Room) {
     this.rooms.delete(room);
+    console.log("Room removed")
     this.emit("update");
   }
 

@@ -18,8 +18,9 @@ export class Room extends EventEmitter {
 
     this.join(owner);
     this.addListener("update", () => {
+      console.log(this.users.size)
       if (this.users.size === 0) {
-        this.destroy();
+        this.disband_room()
       }
     });
   }
@@ -33,7 +34,7 @@ export class Room extends EventEmitter {
 
   destroy() {
     this.users.clear();
-    this.emit("end", self);
+    this.emit("end", this);
   }
 
   join(user: User) {
