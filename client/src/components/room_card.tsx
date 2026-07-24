@@ -6,17 +6,16 @@ interface RoomCardProps {
   join: () => void;
 }
 
-export default function RoomCard({ room, join}: RoomCardProps) {
+export default function RoomCard({ room, join }: RoomCardProps) {
   useEffect(() => {
-    console.log(room)
-  })
+    console.log(room);
+  });
   return (
-    <div className="border">
-      <p>{room.name}</p>
-      <p>owner: {room.owner.name}</p>
-      <p>users in: {room.users?.length}</p>
-      <p>id: {room.id}</p>
-        <button onClick={join}>join</button>
+    <div className="room-card">
+      <span>{room.name}</span>
+      <span>players: {room.users?.length}</span>
+      <span>id: {room.id}</span>
+      <button onClick={join}>join</button>
     </div>
   );
 }
