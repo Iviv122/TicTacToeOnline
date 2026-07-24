@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import CreateRoom from "./components/create_room";
 import type { components } from "./schema";
+import RoomCard from "./components/room_card";
+import LobbyRoom from "./components/lobby_room";
 
 function App() {
   const wsRef = useRef(null);
   const [roomCount, setRoomCount] = useState(0);
-  const [rooms, setRooms] = useState([]);
+  const [rooms, setRooms] = useState<components["schemas"]["RoomSchema"][]>([]);
   const [usersCount, setUsersCount] = useState(0);
   const [join, setJoin] = useState("");
   const [userId, setUserId] = useState("");
@@ -36,7 +38,7 @@ function App() {
       }
       if (mess.type === "room") {
         setRooms((prev) =>
-          prev.map((i) => (i.id === mess.data.room.id ? mess.data : i)),
+          prev.map((i) => (i.id === mess.data.room.id ? mess.data.room : i)),
         );
       }
       if (mess.type === "join") {
@@ -62,6 +64,23 @@ function App() {
     return <h1>Wait for connection id</h1>;
   }
 
+  const a = rooms.find((i) => i.id === join);
+  if (a) {
+    return (
+      <LobbyRoom
+        room={a}
+        leave={() => {
+          const mes = {
+            command: "leave",
+            payload: {},
+          };
+          send(mes);
+          setJoin("");
+        }}
+      />
+    );
+  }
+
   return (
     <div>
       <CreateRoom send={send} />
@@ -69,44 +88,22 @@ function App() {
       <p>Your username: {userName}</p>
       <div>rooms count: {roomCount}</div>
       <div>users online: {usersCount}</div>
-      <div>
-        {rooms.map((i) => (
-          <div key={i.id}>
-            <h3>{i.name}</h3>
-            <p>users: {i.users.length}</p>
-            <button
-              onClick={() => {
-                const mes = {
-                  command: "join",
-                  payload: {
-                    room: i.id,
-                  },
-                };
-                setJoin(i.id);
-                send(mes);
-              }}
-            >
-              join
-            </button>
-            {i.id === join ? (
-              <button
-                onClick={() => {
-                  const mes = {
-                    command: "leave",
-                    payload: {},
-                  };
-                  send(mes);
-                  setJoin("");
-                }}
-              >
-                leave
-              </button>
-            ) : (
-              <></>
-            )}
-          </div>
-        ))}
-      </div>
+      {rooms.map((i) => (
+        <RoomCard
+          key={i.id}
+          room={i}
+          join={() => {
+            const mes = {
+              command: "join",
+              payload: {
+                room: i.id,
+              },
+            };
+            setJoin(i.id);
+            send(mes);
+          }}
+        />
+      ))}
     </div>
   );
 }

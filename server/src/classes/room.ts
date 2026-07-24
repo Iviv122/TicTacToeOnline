@@ -61,6 +61,7 @@ export class Room extends EventEmitter {
   toJSON() {
     return {
       id: this.id as string,
+      owner: this.owner.toJSON(),
       name: this.name as string,
       users: [...this.users],
     };
@@ -69,6 +70,7 @@ export class Room extends EventEmitter {
 
 export const RoomSchema = t.Object({
   id: t.String(),
+  owner: UserSchema,
   name: t.String(),
   users: t.Array(UserSchema),
 });
