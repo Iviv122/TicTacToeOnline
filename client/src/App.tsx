@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import CreateRoom from "./components/create_room";
 import type { components } from "./schema";
-import RoomCard from "./components/room_card";
 import LobbyRoom from "./components/lobby_room";
 import UserRename from "./components/user_rename";
+import RoomList from "./components/room_list";
 
 function App() {
   const wsRef = useRef(null);
@@ -13,7 +13,6 @@ function App() {
   const [join, setJoin] = useState("");
   const [userId, setUserId] = useState("");
   const [userName, setUserName] = useState("");
-
 
   useEffect(() => {
     const socket = new WebSocket("ws://localhost:3000/ws");
@@ -82,31 +81,15 @@ function App() {
       />
     );
   }
-
   return (
     <div>
       <CreateRoom send={send} />
-      <UserRename send={send}/>
+      <UserRename send={send} />
       <p>Your connection id: {userId}</p>
       <p>Your username: {userName}</p>
       <div>rooms count: {roomCount}</div>
       <div>users online: {usersCount}</div>
-      {rooms.map((i) => (
-        <RoomCard
-          key={i.id}
-          room={i}
-          join={() => {
-            const mes = {
-              command: "join",
-              payload: {
-                room: i.id,
-              },
-            };
-            setJoin(i.id);
-            send(mes);
-          }}
-        />
-      ))}
+      <RoomList rooms={rooms} setJoin={setJoin} send={send} />
     </div>
   );
 }
