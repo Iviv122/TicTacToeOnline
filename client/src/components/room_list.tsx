@@ -9,7 +9,7 @@ interface RoomListProps {
 
 export default function RoomList({rooms,setJoin,send} : RoomListProps) {
   return (
-    <div>
+    <div className="items-center flex flex-col divide-y-3">
       {rooms.map((i) => (
         <RoomCard
           key={i.id}
@@ -24,6 +24,7 @@ export default function RoomList({rooms,setJoin,send} : RoomListProps) {
             setJoin(i.id);
             send(mes);
           }}
+          className="w-full "
         />
       ))}
     </div>

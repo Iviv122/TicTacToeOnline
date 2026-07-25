@@ -1,4 +1,6 @@
 import { useState } from "react";
+import TextInput from "./text_input";
+import Button from "./button";
 
 interface CreateRoomProps {
   send: (mess: object) => void;
@@ -9,15 +11,15 @@ export default function CreateRoom({ send }: CreateRoomProps) {
 
   return (
     <div>
-      <span>create room</span>
-      <input
-        type="text"
+      <span className="m-3">Create room</span>
+      <TextInput
         value={roomName}
-        onChange={(e) => setRoomName(e.target.value)}
+        placeholder="Amazing room"
+        onChange={setRoomName}
+        className="m-3"
       />
-      <input
-        type="button"
-        value="Submit"
+      <Button
+        label="Submit"
         onClick={() =>
           send({
             command: "create",
@@ -26,6 +28,7 @@ export default function CreateRoom({ send }: CreateRoomProps) {
             },
           })
         }
+        className="m-3"
       />
     </div>
   );

@@ -1,4 +1,6 @@
 import { useState } from "react";
+import TextInput from "./text_input";
+import Button from "./button";
 
 interface CreateRoomProps {
   send: (mess: object) => void;
@@ -9,15 +11,16 @@ export default function UserRename({ send }: CreateRoomProps) {
 
   return (
     <div>
-      <span>rename</span>
-      <input
-        type="text"
+      <span className="m-3">Your nickname</span>
+      <TextInput
         value={roomName}
-        onChange={(e) => setRoomName(e.target.value)}
+        onChange={setRoomName}
+        placeholder="Your nickname..."
+        className="m-3"
       />
-      <input
-        type="button"
-        value="Submit"
+      <Button
+        className="m-3"
+        label="Submit"
         onClick={() =>
           send({
             command: "rename",

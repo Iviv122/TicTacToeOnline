@@ -69,6 +69,7 @@ function App() {
   if (a) {
     return (
       <LobbyRoom
+        my_name={userName}
         room={a}
         leave={() => {
           const mes = {
@@ -83,12 +84,16 @@ function App() {
   }
   return (
     <div>
-      <CreateRoom send={send} />
-      <UserRename send={send} />
-      <p>Your connection id: {userId}</p>
-      <p>Your username: {userName}</p>
-      <div>rooms count: {roomCount}</div>
-      <div>users online: {usersCount}</div>
+      <div className="flex justify-around">
+        <CreateRoom send={send} />
+        <UserRename send={send} />
+      </div>
+      <div className="flex justify-around mx-5 border-y-1">
+        <p>Your connection id: {userId}</p>
+        <div>rooms count: {roomCount}</div>
+        <div>users online: {usersCount}</div>
+      </div>
+      <p className="text-center text-2xl text-white">Rooms</p>
       <RoomList rooms={rooms} setJoin={setJoin} send={send} />
     </div>
   );
