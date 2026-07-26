@@ -47,8 +47,21 @@ export class Room extends EventEmitter {
 
     user.off("claim", this.claim_role);
 
-    if (this.crosses === user) this.crosses = undefined;
-    if (this.circles === user) this.circles = undefined;
+    if (this.crosses === user) {
+      this.crosses = undefined;
+    }
+    if (this.circles === user) {
+      this.circles = undefined;
+    }
+
+    if (this.owner === user) {
+      const new_owner = this.users.values().next().value;
+      if (new_owner) {
+        this.owner = new_owner
+      } else {
+        this.disband_room()
+      }
+    }
 
     this.emit("update", this);
   };
@@ -83,7 +96,7 @@ export class Room extends EventEmitter {
       default:
         return;
     }
-  }
+  };
 
   claim_spectator(user: User) {
     if (this.circles === user) {
