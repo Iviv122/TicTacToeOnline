@@ -89,9 +89,14 @@ class UserManager {
       case "rename":
         if (mess.payload.name) {
           user.rename(mess.payload.name);
-          userUpdate(user)
+          userUpdate(user);
         }
         return;
+      case "claim":
+        if (mess.payload.role) {
+          user.claim(mess.payload.role)
+        }
+        return
       default:
         console.log(mess.command + " Message type undefined");
         return;
@@ -126,7 +131,7 @@ function userUpdate(user: User) {
       new_name: user.name,
     },
   } as Message;
-  user.sendMessage(mess)
+  user.sendMessage(mess);
 }
 function sendJoin(user: User, room: Room) {
   const mess = {

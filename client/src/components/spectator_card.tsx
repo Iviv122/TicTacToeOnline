@@ -8,7 +8,7 @@ interface SpecatatorProps {
 export default function SpecatatorCard({
   user,
   is_owner,
-  is_user: is_user,
+  is_user,
 }: SpecatatorProps) {
   return (
     <p>

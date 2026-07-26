@@ -1,6 +1,6 @@
 import { t } from "elysia";
 import { register_model } from "../models";
-import { RoomSchema } from "./room";
+import { RolesSchema, RoomSchema } from "./room";
 
 export const MessageSchema = t.Object({
   type: t.Union([
@@ -17,7 +17,8 @@ export const MessageSchema = t.Object({
     room: t.Optional(RoomSchema),
     rooms: t.Optional(t.Array(RoomSchema)),
     room_id: t.Optional(t.String()),
-    users_count: t.Optional(t.Number())
+    users_count: t.Optional(t.Number()),
+    role: t.Optional(RolesSchema)
   }),
 });
 register_model("MessageSchema", MessageSchema);

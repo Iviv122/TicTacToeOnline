@@ -1,11 +1,13 @@
 import { t } from "elysia";
 import { register_model } from "../models";
+import { RolesSchema } from "./room";
 
 export const Command = t.Union([
   t.Literal("join"),
   t.Literal("rename"),
   t.Literal("create"),
   t.Literal("mark"),
+  t.Literal("claim"),
   t.Literal("leave"),
   t.Literal("rematch"),
 ]);
@@ -18,6 +20,7 @@ export const CommandPayload = t.Object({
     room: t.Optional(t.String()),
     target: t.Optional(t.String()),
     text: t.Optional(t.String()),
+    role: t.Optional(RolesSchema)
   }),
 });
 register_model("CommandPayload", CommandPayload)

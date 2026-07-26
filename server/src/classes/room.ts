@@ -9,6 +9,9 @@ export class Room extends EventEmitter {
   users: Set<User>;
   owner: User;
 
+  crosses?: User = undefined;
+  circles?: User = undefined;
+
   constructor(name: string, id: string, owner: User) {
     super();
     this.id = id;
@@ -18,9 +21,9 @@ export class Room extends EventEmitter {
 
     this.join(owner);
     this.addListener("update", () => {
-      console.log(this.users.size)
+      console.log(this.users.size);
       if (this.users.size === 0) {
-        this.disband_room()
+        this.disband_room();
       }
     });
   }
@@ -37,34 +40,76 @@ export class Room extends EventEmitter {
     this.emit("end", this);
   }
 
+  cleaunup = (user: User) => {
+    if (!this.users.has(user)) return;
+
+    console.log(this);
+
+    this.users.delete(user);
+
+    user.off("claim", this.claim_role);
+
+    if (this.crosses === user) this.crosses = undefined;
+    if (this.circles === user) this.circles = undefined;
+
+    this.emit("update", this);
+  };
+
   join(user: User) {
-    console.log(this.users.size);
     if (this.users.has(user)) {
       return;
     }
     const room = this;
     this.users.add(user);
-    user.once("close", (_user: User) => {
-      if (!this.users.has(user)) {
-        return;
-      }
-      this.users.delete(user);
-      this.emit("update", room);
-      console.log("user disconnected");
-    });
-    user.once("leave", (_user: User) => {
-      if (!this.users.has(user)) {
-        return;
-      }
-      this.users.delete(user);
-      this.emit("update", room);
-      console.log("user left");
-    });
+    user.once("close", this.cleaunup);
+    user.once("leave", this.cleaunup);
+
+    user.on("claim", this.claim_role);
 
     this.emit("update", room);
   }
 
   player_turn() {}
+
+  claim_role = (user: User, role: RoomRole) => {
+    switch (role) {
+      case "Circles":
+        this.claim_circles(user);
+        return;
+      case "Cross":
+        this.claim_crosses(user);
+        return;
+      case "Spectator":
+        this.claim_spectator(user);
+        return;
+      default:
+        return;
+    }
+  }
+
+  claim_spectator(user: User) {
+    if (this.circles === user) {
+      this.circles = undefined;
+    }
+    if (this.crosses === user) {
+      this.crosses = undefined;
+    }
+    this.emit("update", this);
+  }
+  claim_crosses(user: User) {
+    if (this.crosses !== undefined) {
+      return;
+    }
+    this.crosses = user;
+    this.emit("update", this);
+  }
+  claim_circles(user: User) {
+    if (this.circles !== undefined) {
+      return;
+    }
+    this.circles = user;
+    this.emit("update", this);
+  }
 
   user_count(): number {
     return this.users.size;
@@ -79,10 +124,21 @@ export class Room extends EventEmitter {
   }
 }
 
+export const RolesSchema = t.Union([
+  t.Literal("Cross"),
+  t.Literal("Circles"),
+  t.Literal("Spectator"),
+]);
+register_model("RolesSchema", RolesSchema);
+export type RoomRole = typeof RolesSchema.static;
+
 export const RoomSchema = t.Object({
   id: t.String(),
   owner: UserSchema,
   name: t.String(),
   users: t.Array(UserSchema),
+  crosses: t.Optional(UserSchema),
+  circles: t.Optional(UserSchema),
 });
+
 register_model("RoomSchema", RoomSchema);

@@ -4,6 +4,7 @@ import { TypeCheck } from "elysia/dist/type-system";
 import { register_model } from "../models";
 import { EventEmitter } from "node:events";
 import { Message } from "./message";
+import { RoomRole } from "./room";
 
 
 interface WS{
@@ -18,6 +19,10 @@ export class User extends EventEmitter {
     public ws: ServerWebSocket<WS>,
   ) {
     super()
+  }
+
+  claim(role : RoomRole): void{
+    this.emit("claim",this,role)
   }
 
   // make turn
