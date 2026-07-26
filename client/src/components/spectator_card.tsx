@@ -1,3 +1,4 @@
+import { CircleUser, Crown } from "lucide-react";
 import type { components } from "../schema";
 
 interface SpecatatorProps {
@@ -12,21 +13,17 @@ export default function SpecatatorCard({
 }: SpecatatorProps) {
   return (
     <p>
-      <li>
+      <li className="flex gap-3">
         {user.name}
         {"   "}
         {is_user ? (
-          <b>
-            <i>me</i>
-          </b>
+          <CircleUser />
         ) : (
           ""
         )}
         {"   "}
         {is_owner ? (
-          <i>
-            <b>owner</b>
-          </i>
+          <Crown />
         ) : (
           ""
         )}

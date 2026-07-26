@@ -1,4 +1,4 @@
-import { Circle, CircleSmall, Croissant, X } from "lucide-react";
+import {  CircleSmall, X } from "lucide-react";
 import type { components } from "../schema";
 import Button from "./button";
 import SpecatatorCard from "./spectator_card";
