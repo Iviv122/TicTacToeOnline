@@ -43,8 +43,6 @@ export class Room extends EventEmitter {
   cleaunup = (user: User) => {
     if (!this.users.has(user)) return;
 
-    console.log(this);
-
     this.users.delete(user);
 
     user.off("claim", this.claim_role);
