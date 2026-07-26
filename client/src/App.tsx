@@ -71,6 +71,7 @@ function App() {
       <LobbyRoom
         my_name={userName}
         room={a}
+        send={send}
         leave={() => {
           const mes = {
             command: "leave",

@@ -45,17 +45,7 @@ export interface components {
             name: string;
         };
         /** @enum {string} */
-        Command: "join" | "rename" | "create" | "mark" | "leave" | "rematch";
-        CommandPayload: {
-            /** @enum {string} */
-            command: "join" | "rename" | "create" | "mark" | "leave" | "rematch";
-            payload: {
-                name?: string;
-                room?: string;
-                target?: string;
-                text?: string;
-            };
-        };
+        RolesSchema: "Cross" | "Circles" | "Spectator";
         RoomSchema: {
             id: string;
             owner: {
@@ -67,6 +57,28 @@ export interface components {
                 id: string;
                 name: string;
             }[];
+            crosses?: {
+                id: string;
+                name: string;
+            };
+            circles?: {
+                id: string;
+                name: string;
+            };
+        };
+        /** @enum {string} */
+        Command: "join" | "rename" | "create" | "mark" | "claim" | "leave" | "rematch";
+        CommandPayload: {
+            /** @enum {string} */
+            command: "join" | "rename" | "create" | "mark" | "claim" | "leave" | "rematch";
+            payload: {
+                name?: string;
+                room?: string;
+                target?: string;
+                text?: string;
+                /** @enum {string} */
+                role?: "Cross" | "Circles" | "Spectator";
+            };
         };
         MessageSchema: {
             /** @enum {string} */
@@ -85,6 +97,14 @@ export interface components {
                         id: string;
                         name: string;
                     }[];
+                    crosses?: {
+                        id: string;
+                        name: string;
+                    };
+                    circles?: {
+                        id: string;
+                        name: string;
+                    };
                 };
                 rooms?: {
                     id: string;
@@ -97,9 +117,19 @@ export interface components {
                         id: string;
                         name: string;
                     }[];
+                    crosses?: {
+                        id: string;
+                        name: string;
+                    };
+                    circles?: {
+                        id: string;
+                        name: string;
+                    };
                 }[];
                 room_id?: string;
                 users_count?: number;
+                /** @enum {string} */
+                role?: "Cross" | "Circles" | "Spectator";
             };
         };
     };

@@ -119,6 +119,8 @@ export class Room extends EventEmitter {
       id: this.id as string,
       owner: this.owner.toJSON(),
       name: this.name as string,
+      crosses: this.crosses?.toJSON(),
+      circles: this.circles?.toJSON(),
       users: [...this.users],
     };
   }
