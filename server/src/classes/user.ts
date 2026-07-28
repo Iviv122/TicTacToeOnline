@@ -60,4 +60,5 @@ export const UserSchema = t.Object({
   id: t.String(),
   name: t.String()
 })
+export type UserSchemaType = typeof UserSchema.static
 register_model("UserSchema", UserSchema)
