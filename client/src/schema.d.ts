@@ -44,6 +44,17 @@ export interface components {
             id: string;
             name: string;
         };
+        GameScheme: {
+            current_player: {
+                id: string;
+                name: string;
+            };
+            board: ("X" | "O" | ".")[][];
+        };
+        TurnScheme: {
+            x: string | number;
+            y: string | number;
+        };
         /** @enum {string} */
         RolesSchema: "Cross" | "Circles" | "Spectator";
         /** @enum {string} */
@@ -82,11 +93,15 @@ export interface components {
                 text?: string;
                 /** @enum {string} */
                 role?: "Cross" | "Circles" | "Spectator";
+                cords?: {
+                    x: string | number;
+                    y: string | number;
+                };
             };
         };
         MessageSchema: {
             /** @enum {string} */
-            type: "connection" | "rename" | "join" | "rooms" | "users" | "room";
+            type: "connection" | "game" | "rename" | "join" | "rooms" | "users" | "room";
             data: {
                 new_name?: string;
                 connection_id?: string;
@@ -138,6 +153,13 @@ export interface components {
                 users_count?: number;
                 /** @enum {string} */
                 role?: "Cross" | "Circles" | "Spectator";
+                game?: {
+                    current_player: {
+                        id: string;
+                        name: string;
+                    };
+                    board: ("X" | "O" | ".")[][];
+                };
             };
         };
     };

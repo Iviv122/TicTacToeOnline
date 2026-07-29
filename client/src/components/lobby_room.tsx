@@ -2,18 +2,23 @@ import { CircleSmall, X } from "lucide-react";
 import type { components } from "../schema";
 import Button from "./button";
 import SpecatatorCard from "./spectator_card";
+import GameScreen from "./game_screen";
 
 interface RoomProps {
   room: components["schemas"]["RoomSchema"];
   leave: () => void;
   my_name: string;
   send: (data) => void;
+  game: components["schemas"]["GameScheme"];
 }
 
-export default function LobbyRoom({ room, leave, my_name, send }: RoomProps) {
-
-
-
+export default function LobbyRoom({
+  room,
+  leave,
+  my_name,
+  send,
+  game,
+}: RoomProps) {
   const claim = (
     role: components["schemas"]["RolesSchema"],
   ): components["schemas"]["CommandPayload"] => {
@@ -27,25 +32,7 @@ export default function LobbyRoom({ room, leave, my_name, send }: RoomProps) {
   };
 
   if (room.state === "Playing") {
-    return (
-      <div>
-        Playing
-        <p>Turn</p>
-        <div>
-          <button></button>
-          <button></button>
-          <button></button>
-
-          <button></button>
-          <button></button>
-          <button></button>
-
-          <button></button>
-          <button></button>
-          <button></button>
-        </div>
-      </div>
-    );
+    return <GameScreen game={game} send={send} />;
   }
 
   return (

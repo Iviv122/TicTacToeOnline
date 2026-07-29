@@ -13,6 +13,7 @@ function App() {
   const [join, setJoin] = useState("");
   const [userId, setUserId] = useState("");
   const [userName, setUserName] = useState("");
+  const [game, setGame] = useState<components["schemas"]["GameScheme"]>();
 
   useEffect(() => {
     const socket = new WebSocket("ws://localhost:3000/ws");
@@ -45,6 +46,9 @@ function App() {
       if (mess.type === "join") {
         setJoin(mess.data.room_id);
       }
+      if (mess.type === "game") {
+        setGame(mess.data.game);
+      }
       console.log(mess);
     };
 
@@ -72,6 +76,7 @@ function App() {
         my_name={userName}
         room={a}
         send={send}
+        game={game}
         leave={() => {
           const mes = {
             command: "leave",

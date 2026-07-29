@@ -26,8 +26,8 @@ export class User extends EventEmitter {
   }
 
   // make turn
-  mark(): void {
-
+  mark(x:number,y:number): void {
+    this.emit("mark", this,x,y)
   }
 
   // use when socket is closed

@@ -172,3 +172,10 @@ export const GameScheme = t.Object({
 })
 export type GameSchemeType = typeof GameScheme.static
 register_model("GameScheme", GameScheme)
+
+export const TurnScheme = t.Object({
+  x: t.Integer(),
+  y: t.Integer()
+})
+export type TurnSchemeType = typeof TurnScheme.static
+register_model("TurnScheme",TurnScheme)

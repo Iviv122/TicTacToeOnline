@@ -91,11 +91,14 @@ export class Room extends EventEmitter {
     user.once("leave", this.cleaunup);
 
     user.on("claim", this.claim_role);
+    user.on("mark", this.playerTurn);
 
     this.update();
   }
 
-  player_turn() {}
+  playerTurn = (user : User,x : number,y:number) => {
+    this.game?.mark(x, y, user)
+  }
 
   claim_role = (user: User, role: RoomRole) => {
     switch (role) {
