@@ -115,7 +115,7 @@ function sendRooms(user: User) {
 
   user.sendMessage(mess);
 }
-function sendRoom(user: User, room: Room) {
+export function sendRoom(user: User, room: Room) {
   const mess = {
     type: "room",
     data: {

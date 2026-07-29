@@ -2,8 +2,8 @@ import { t } from "elysia";
 import EventEmitter from "node:events";
 import { User, UserSchema } from "./user";
 import { register_model } from "../models";
-import { GameScheme, GameSchemeType, TicTacToeGame } from "./game";
-import { userManager } from "./user_manager";
+import { GameSchemeType, TicTacToeGame } from "./game";
+import { sendRoom } from "./user_manager";
 import { Message } from "./message";
 
 export class Room extends EventEmitter {
@@ -49,6 +49,12 @@ export class Room extends EventEmitter {
   update = () => {
     this.emit("update", this);
   };
+
+  internalUpdate = () => {
+    for (const i of this.users) {
+      sendRoom(i, this)
+    }
+  }
 
   cleaunup = (user: User) => {
     if (!this.users.has(user)) return;
@@ -116,21 +122,21 @@ export class Room extends EventEmitter {
     if (this.crosses === user) {
       this.crosses = undefined;
     }
-    this.update();
+    this.internalUpdate()
   }
   claim_crosses(user: User) {
     if (this.crosses !== undefined) {
       return;
     }
     this.crosses = user;
-    this.update();
+    this.internalUpdate()
   }
   claim_circles(user: User) {
     if (this.circles !== undefined) {
       return;
     }
     this.circles = user;
-    this.update();
+    this.internalUpdate()
   }
 
   user_count(): number {
