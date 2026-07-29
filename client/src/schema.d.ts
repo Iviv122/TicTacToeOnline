@@ -46,6 +46,8 @@ export interface components {
         };
         /** @enum {string} */
         RolesSchema: "Cross" | "Circles" | "Spectator";
+        /** @enum {string} */
+        RoomState: "Waiting" | "Playing";
         RoomSchema: {
             id: string;
             owner: {
@@ -65,6 +67,8 @@ export interface components {
                 id: string;
                 name: string;
             };
+            /** @enum {string} */
+            state: "Waiting" | "Playing";
         };
         /** @enum {string} */
         Command: "join" | "rename" | "create" | "mark" | "claim" | "leave" | "rematch";
@@ -105,6 +109,8 @@ export interface components {
                         id: string;
                         name: string;
                     };
+                    /** @enum {string} */
+                    state: "Waiting" | "Playing";
                 };
                 rooms?: {
                     id: string;
@@ -125,6 +131,8 @@ export interface components {
                         id: string;
                         name: string;
                     };
+                    /** @enum {string} */
+                    state: "Waiting" | "Playing";
                 }[];
                 room_id?: string;
                 users_count?: number;

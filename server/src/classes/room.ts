@@ -2,6 +2,8 @@ import { t } from "elysia";
 import EventEmitter from "node:events";
 import { User, UserSchema } from "./user";
 import { register_model } from "../models";
+import { TicTacToeGame } from "./game";
+import { start } from "node:repl";
 
 export class Room extends EventEmitter {
   id: String;
@@ -11,6 +13,9 @@ export class Room extends EventEmitter {
 
   crosses?: User = undefined;
   circles?: User = undefined;
+
+  game?: TicTacToeGame<User> = undefined;
+  state: RoomState = "Waiting";
 
   constructor(name: string, id: string, owner: User) {
     super();
@@ -40,6 +45,10 @@ export class Room extends EventEmitter {
     this.emit("end", this);
   }
 
+  update = () => {
+    this.emit("update", this);
+  };
+
   cleaunup = (user: User) => {
     if (!this.users.has(user)) return;
 
@@ -57,13 +66,13 @@ export class Room extends EventEmitter {
     if (this.owner === user) {
       const new_owner = this.users.values().next().value;
       if (new_owner) {
-        this.owner = new_owner
+        this.owner = new_owner;
       } else {
-        this.disband_room()
+        this.disband_room();
       }
     }
 
-    this.emit("update", this);
+    this.update();
   };
 
   join(user: User) {
@@ -77,7 +86,7 @@ export class Room extends EventEmitter {
 
     user.on("claim", this.claim_role);
 
-    this.emit("update", room);
+    this.update()
   }
 
   player_turn() {}
@@ -86,9 +95,11 @@ export class Room extends EventEmitter {
     switch (role) {
       case "Circles":
         this.claim_circles(user);
+        this.startGame()
         return;
       case "Cross":
         this.claim_crosses(user);
+        this.startGame()
         return;
       case "Spectator":
         this.claim_spectator(user);
@@ -105,26 +116,39 @@ export class Room extends EventEmitter {
     if (this.crosses === user) {
       this.crosses = undefined;
     }
-    this.emit("update", this);
+    this.update()
   }
   claim_crosses(user: User) {
     if (this.crosses !== undefined) {
       return;
     }
     this.crosses = user;
-    this.emit("update", this);
+    this.update()
   }
   claim_circles(user: User) {
     if (this.circles !== undefined) {
       return;
     }
     this.circles = user;
-    this.emit("update", this);
+    this.update()
   }
 
   user_count(): number {
     return this.users.size;
   }
+
+  startGame(): void {
+    if (this.crosses && this.circles) {
+      this.game = new TicTacToeGame(this.crosses, this.circles);
+      this.state = "Playing";
+      this.update();
+    }
+  }
+  endGame(): void {
+    this.state = "Waiting";
+    this.update();
+  }
+
   toJSON() {
     return {
       id: this.id as string,
@@ -133,6 +157,7 @@ export class Room extends EventEmitter {
       crosses: this.crosses?.toJSON(),
       circles: this.circles?.toJSON(),
       users: [...this.users],
+      state: this.state as string,
     };
   }
 }
@@ -145,6 +170,10 @@ export const RolesSchema = t.Union([
 register_model("RolesSchema", RolesSchema);
 export type RoomRole = typeof RolesSchema.static;
 
+export const RoomState = t.Union([t.Literal("Waiting"), t.Literal("Playing")]);
+register_model("RoomState", RoomState);
+export type RoomState = typeof RoomState.static;
+
 export const RoomSchema = t.Object({
   id: t.String(),
   owner: UserSchema,
@@ -152,6 +181,6 @@ export const RoomSchema = t.Object({
   users: t.Array(UserSchema),
   crosses: t.Optional(UserSchema),
   circles: t.Optional(UserSchema),
+  state: RoomState
 });
-
 register_model("RoomSchema", RoomSchema);

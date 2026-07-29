@@ -23,6 +23,15 @@ export default function LobbyRoom({ room, leave, my_name, send }: RoomProps) {
     };
   };
 
+
+  if (room.state === 'Playing') {
+    return (
+      <div>
+        Playing
+      </div>
+    )
+  }
+
   return (
     <div className="p-5">
       <div className="flex gap-5">

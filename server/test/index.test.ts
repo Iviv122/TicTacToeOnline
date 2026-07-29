@@ -1,7 +1,7 @@
 // test/index.test.ts
 import { describe, expect, it } from "bun:test";
 import { TicTacToeGame } from "../src/classes/game";
-import { UserSchema, UserSchemaType } from "../src/classes/user";
+import { UserSchemaType } from "../src/classes/user";
 
 describe("Elysia", () => {
   const user1 = {
