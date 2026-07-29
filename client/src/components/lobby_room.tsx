@@ -1,4 +1,4 @@
-import {  CircleSmall, X } from "lucide-react";
+import { CircleSmall, X } from "lucide-react";
 import type { components } from "../schema";
 import Button from "./button";
 import SpecatatorCard from "./spectator_card";
@@ -11,6 +11,9 @@ interface RoomProps {
 }
 
 export default function LobbyRoom({ room, leave, my_name, send }: RoomProps) {
+
+
+
   const claim = (
     role: components["schemas"]["RolesSchema"],
   ): components["schemas"]["CommandPayload"] => {
@@ -23,13 +26,26 @@ export default function LobbyRoom({ room, leave, my_name, send }: RoomProps) {
     };
   };
 
-
-  if (room.state === 'Playing') {
+  if (room.state === "Playing") {
     return (
       <div>
         Playing
+        <p>Turn</p>
+        <div>
+          <button></button>
+          <button></button>
+          <button></button>
+
+          <button></button>
+          <button></button>
+          <button></button>
+
+          <button></button>
+          <button></button>
+          <button></button>
+        </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -61,16 +77,20 @@ export default function LobbyRoom({ room, leave, my_name, send }: RoomProps) {
       <div onClick={() => send(claim("Spectator"))}>
         <p>spectators</p>
         <ul>
-          {room.users.filter((i) => (i.id !== room.circles?.id && i.id !== room.crosses?.id)).map((i) => (
-            <div>
-              <SpecatatorCard
-                key={i.id}
-                user={i}
-                is_owner={i.id === room.owner.id}
-                is_user={i.name === my_name}
-              />
-            </div>
-          ))}
+          {room.users
+            .filter(
+              (i) => i.id !== room.circles?.id && i.id !== room.crosses?.id,
+            )
+            .map((i) => (
+              <div>
+                <SpecatatorCard
+                  key={i.id}
+                  user={i}
+                  is_owner={i.id === room.owner.id}
+                  is_user={i.name === my_name}
+                />
+              </div>
+            ))}
         </ul>
       </div>
     </div>

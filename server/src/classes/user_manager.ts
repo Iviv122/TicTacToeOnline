@@ -142,6 +142,7 @@ function sendJoin(user: User, room: Room) {
   } as Message;
   user.sendMessage(mess);
 }
+
 function sendId(user: User) {
   const mess = {
     type: "connection",

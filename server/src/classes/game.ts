@@ -1,5 +1,9 @@
 import { t } from "elysia";
+import { getSchemaProperties } from "elysia/dist/schema";
 import EventEmitter from "node:events";
+import { register } from "node:module";
+import { register_model } from "../models";
+import { User, UserSchema } from "./user";
 
 export class TicTacToeGame<TPlayer> extends EventEmitter {
   private win_length = 3;
@@ -142,10 +146,18 @@ export class TicTacToeGame<TPlayer> extends EventEmitter {
   curr_player(): TPlayer{
     return this.player_queue[this.turn%this.player_queue.length]
   }
-  reset(): void {}
+  reset(): void {
+    // TODO
+    // restart*
+    // end on player end
+  }
+  toJson() {
+    return {
+      current_player: this.curr_player(),
+      board: this.board
+    } as GameSchemeType
+  }
 }
-
-// TPlayer sends
 
 const GameSymbols = t.Union([
   t.Literal("X"),
@@ -153,3 +165,10 @@ const GameSymbols = t.Union([
   t.Literal(".")
 ])
 type GameSymbolsType = typeof GameSymbols.static
+
+export const GameScheme = t.Object({
+  current_player: UserSchema,
+  board: t.Array(t.Array(GameSymbols))
+})
+export type GameSchemeType = typeof GameScheme.static
+register_model("GameScheme", GameScheme)

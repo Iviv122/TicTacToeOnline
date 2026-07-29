@@ -2,8 +2,9 @@ import { t } from "elysia";
 import EventEmitter from "node:events";
 import { User, UserSchema } from "./user";
 import { register_model } from "../models";
-import { TicTacToeGame } from "./game";
-import { start } from "node:repl";
+import { GameScheme, GameSchemeType, TicTacToeGame } from "./game";
+import { userManager } from "./user_manager";
+import { Message } from "./message";
 
 export class Room extends EventEmitter {
   id: String;
@@ -79,14 +80,13 @@ export class Room extends EventEmitter {
     if (this.users.has(user)) {
       return;
     }
-    const room = this;
     this.users.add(user);
     user.once("close", this.cleaunup);
     user.once("leave", this.cleaunup);
 
     user.on("claim", this.claim_role);
 
-    this.update()
+    this.update();
   }
 
   player_turn() {}
@@ -95,11 +95,11 @@ export class Room extends EventEmitter {
     switch (role) {
       case "Circles":
         this.claim_circles(user);
-        this.startGame()
+        this.startGame();
         return;
       case "Cross":
         this.claim_crosses(user);
-        this.startGame()
+        this.startGame();
         return;
       case "Spectator":
         this.claim_spectator(user);
@@ -116,21 +116,21 @@ export class Room extends EventEmitter {
     if (this.crosses === user) {
       this.crosses = undefined;
     }
-    this.update()
+    this.update();
   }
   claim_crosses(user: User) {
     if (this.crosses !== undefined) {
       return;
     }
     this.crosses = user;
-    this.update()
+    this.update();
   }
   claim_circles(user: User) {
     if (this.circles !== undefined) {
       return;
     }
     this.circles = user;
-    this.update()
+    this.update();
   }
 
   user_count(): number {
@@ -142,11 +142,36 @@ export class Room extends EventEmitter {
       this.game = new TicTacToeGame(this.crosses, this.circles);
       this.state = "Playing";
       this.update();
+      this.sendGameToAll()
     }
   }
   endGame(): void {
     this.state = "Waiting";
     this.update();
+  }
+
+  getGame(): GameSchemeType | undefined {
+    return this.game?.toJson();
+  }
+
+  sendGameToAll() {
+    for (const i of this.users.values()) {
+      this.sendGame(i);
+    }
+  }
+
+  sendGame(user: User) {
+    const game = this.getGame();
+    if (game === undefined) {
+      return;
+    }
+    const mess = {
+      type: "game",
+      data: {
+        game: game
+      }
+    } as Message;
+    user.sendMessage(mess);
   }
 
   toJSON() {
@@ -181,6 +206,6 @@ export const RoomSchema = t.Object({
   users: t.Array(UserSchema),
   crosses: t.Optional(UserSchema),
   circles: t.Optional(UserSchema),
-  state: RoomState
+  state: RoomState,
 });
 register_model("RoomSchema", RoomSchema);
