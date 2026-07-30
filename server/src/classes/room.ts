@@ -90,9 +90,10 @@ export class Room extends EventEmitter {
     this.users.add(user);
     user.once("close", this.cleaunup);
     user.once("leave", this.cleaunup);
-
     user.on("claim", this.claim_role);
     user.on("mark", this.playerTurn);
+
+    this.sendGame(user)
 
     this.update();
   }

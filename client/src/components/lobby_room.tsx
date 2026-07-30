@@ -31,8 +31,8 @@ export default function LobbyRoom({
     };
   };
 
-  if (room.state === "Playing") {
-    return <GameScreen game={game} send={send} />;
+  if (room.state === "Playing" && game) {
+    return <GameScreen game={game} send={send} player_name={my_name} />;
   }
 
   return (

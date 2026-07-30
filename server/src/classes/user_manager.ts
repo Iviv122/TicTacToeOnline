@@ -101,7 +101,7 @@ class UserManager {
         let x = mess.payload.cords?.x
         if (x == undefined) x = -1
         let y = mess.payload.cords?.y
-        if (y == undefined) x = -1
+        if (y == undefined) y = -1
 
         user.mark(x,y);
       default:

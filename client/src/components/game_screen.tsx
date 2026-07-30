@@ -4,9 +4,10 @@ import { Circle, X } from "lucide-react";
 interface GameScreenProps {
   game: components["schemas"]["GameScheme"];
   send: (data: components["schemas"]["CommandPayload"]) => void;
+  player_name: string
 }
 
-export default function GameScreen({ game, send }: GameScreenProps) {
+export default function GameScreen({ game, send, player_name }: GameScreenProps) {
   const sendCords = (x: number, y: number) => {
     const mess: components["schemas"]["CommandPayload"] = {
       command: "mark",
@@ -23,10 +24,9 @@ export default function GameScreen({ game, send }: GameScreenProps) {
 
   return (
     <div>
-      <div>{game.current_player.name}'s Turn</div>
-
+      <div>{player_name === game.current_player.name ? "Your turn" : game.current_player.name+"s turn"}</div>
       {game.board.map((row, y) => (
-        <div key={y} className="flex gap-10">
+        <div key={y} className="flex ">
           {row.map((val, x) => (
             <Tile
               key={`${x}-${y}`}
