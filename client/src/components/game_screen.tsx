@@ -4,10 +4,16 @@ import { Circle, X } from "lucide-react";
 interface GameScreenProps {
   game: components["schemas"]["GameScheme"];
   send: (data: components["schemas"]["CommandPayload"]) => void;
-  player_name: string
+  reset_game: () => void
+  player_name: string;
 }
 
-export default function GameScreen({ game, send, player_name }: GameScreenProps) {
+export default function GameScreen({
+  game,
+  send,
+  reset_game,
+  player_name,
+}: GameScreenProps) {
   const sendCords = (x: number, y: number) => {
     const mess: components["schemas"]["CommandPayload"] = {
       command: "mark",
@@ -22,9 +28,33 @@ export default function GameScreen({ game, send, player_name }: GameScreenProps)
     send(mess);
   };
 
+  if (game.game_result !== undefined) {
+    reset_game()
+    switch (game.game_result) {
+      case "Crosses":
+        return (
+          <div>
+            <p>Crosses Won</p>
+          </div>
+        );
+      case "Circles":
+        return (
+          <div>
+            <p>Circles Won</p>
+          </div>
+        );
+      case "Tie":
+        return <div>Tie</div>;
+    }
+  }
+
   return (
     <div>
-      <div>{player_name === game.current_player.name ? "Your turn" : game.current_player.name+"s turn"}</div>
+      <div>
+        {player_name === game.current_player.name
+          ? "Your turn"
+          : game.current_player.name + "s turn"}
+      </div>
       {game.board.map((row, y) => (
         <div key={y} className="flex ">
           {row.map((val, x) => (
@@ -45,26 +75,23 @@ interface TileProps {
   onClick: () => void;
 }
 
-function Tile({ value, onClick }: TileProps) {
-  let content: React.ReactNode = null;
-
+function Emoji(value) {
   switch (value) {
     case "X":
-      content = <X />;
-      break;
+      return <X />;
     case "O":
-      content = <Circle />;
-      break;
-    default:
-      content = null;
+      return <Circle />;
   }
+}
+
+function Tile({ value, onClick }: TileProps) {
 
   return (
     <div
       className="flex h-15 w-15 items-center justify-center border text-2xl"
       onClick={onClick}
     >
-      {content}
+      {Emoji(value)}
     </div>
   );
 }

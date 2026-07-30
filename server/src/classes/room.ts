@@ -153,12 +153,13 @@ export class Room extends EventEmitter {
   startGame(): void {
     if (this.crosses && this.circles) {
       this.game = new TicTacToeGame(this.crosses, this.circles);
+      this.game.once("end", this.endGame)
       this.state = "Playing";
       this.update();
       this.sendGameToAll()
     }
   }
-  endGame(): void {
+  endGame = (): void  =>{
     this.state = "Waiting";
     this.update();
   }

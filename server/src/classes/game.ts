@@ -2,6 +2,7 @@ import { t } from "elysia";
 import EventEmitter from "node:events";
 import { register_model } from "../models";
 import { UserSchema } from "./user";
+import { types } from "node:util";
 
 export class TicTacToeGame<TPlayer> extends EventEmitter {
   private win_length = 3;
@@ -14,7 +15,8 @@ export class TicTacToeGame<TPlayer> extends EventEmitter {
   height = 3;
 
   board: Array<Array<GameSymbolsType>> = [];
-  free_fields : number
+  free_fields: number
+  game_result?: GameResult
 
   constructor(cross_player: TPlayer, circles_player: TPlayer) {
     super();
@@ -144,8 +146,24 @@ export class TicTacToeGame<TPlayer> extends EventEmitter {
   }
   end_game(player: TPlayer | undefined) {
     if (player !== undefined) {
+
+      const symbol = this.players.get(player)
+
+      switch (symbol) {
+        case 'O':
+          this.game_result = 'Circles'
+          break;
+        case 'X':
+          this.game_result = 'Crosses'
+          break;
+        default:
+          console.error("No such symbol")
+          break;
+      }
+
       this.emit("end",player)
     } else {
+      this.game_result  = 'Tie'
       this.emit("end",undefined)
     }
   }
@@ -160,7 +178,8 @@ export class TicTacToeGame<TPlayer> extends EventEmitter {
   toJson() {
     return {
       current_player: this.curr_player(),
-      board: this.board
+      board: this.board,
+      game_result: this.game_result
     } as GameSchemeType
   }
 }
@@ -173,9 +192,18 @@ const GameSymbols = t.Union([
 type GameSymbolsType = typeof GameSymbols.static
 register_model("GameSymbols",GameSymbols)
 
+export const GameResultScheme = t.Union([
+  t.Literal("Crosses"),
+  t.Literal("Circles"),
+  t.Literal("Tie")
+])
+export type GameResult = typeof GameResultScheme.static
+register_model("GameResult",GameResultScheme)
+
 export const GameScheme = t.Object({
   current_player: UserSchema,
-  board: t.Array(t.Array(GameSymbols))
+  board: t.Array(t.Array(GameSymbols)),
+  game_result: t.Optional(GameResultScheme)
 })
 export type GameSchemeType = typeof GameScheme.static
 register_model("GameScheme", GameScheme)

@@ -65,6 +65,9 @@ function App() {
     wsRef.current?.send(JSON.stringify(data));
   }, []);
 
+  const reset = () => {
+  }
+
   if (userId.trim() === "") {
     return <h1>Wait for connection id</h1>;
   }
@@ -77,6 +80,7 @@ function App() {
         room={a}
         send={send}
         game={game}
+        reset={reset}
         leave={() => {
           const mes = {
             command: "leave",

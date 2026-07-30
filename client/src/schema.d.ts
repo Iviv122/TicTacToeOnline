@@ -46,12 +46,16 @@ export interface components {
         };
         /** @enum {string} */
         GameSymbols: "X" | "O" | ".";
+        /** @enum {string} */
+        GameResult: "Crosses" | "Circles" | "Tie";
         GameScheme: {
             current_player: {
                 id: string;
                 name: string;
             };
             board: ("X" | "O" | ".")[][];
+            /** @enum {string} */
+            game_result?: "Crosses" | "Circles" | "Tie";
         };
         TurnScheme: {
             x: string | number;
@@ -161,6 +165,8 @@ export interface components {
                         name: string;
                     };
                     board: ("X" | "O" | ".")[][];
+                    /** @enum {string} */
+                    game_result?: "Crosses" | "Circles" | "Tie";
                 };
             };
         };
