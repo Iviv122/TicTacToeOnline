@@ -44,6 +44,8 @@ export interface components {
             id: string;
             name: string;
         };
+        /** @enum {string} */
+        GameSymbols: "X" | "O" | ".";
         GameScheme: {
             current_player: {
                 id: string;

@@ -62,6 +62,7 @@ export class Room extends EventEmitter {
     this.users.delete(user);
 
     user.off("claim", this.claim_role);
+    user.off("mark", this.playerTurn)
 
     if (this.crosses === user) {
       this.crosses = undefined;
@@ -96,8 +97,10 @@ export class Room extends EventEmitter {
     this.update();
   }
 
-  playerTurn = (user : User,x : number,y:number) => {
+  playerTurn = (user: User, x: number, y: number) => {
+    console.log("death")
     this.game?.mark(x, y, user)
+    this.sendGameToAll()
   }
 
   claim_role = (user: User, role: RoomRole) => {

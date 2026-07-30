@@ -94,9 +94,16 @@ class UserManager {
         return;
       case "claim":
         if (mess.payload.role) {
-          user.claim(mess.payload.role)
+          user.claim(mess.payload.role);
         }
-        return
+        return;
+      case "mark":
+        let x = mess.payload.cords?.x
+        if (x == undefined) x = -1
+        let y = mess.payload.cords?.y
+        if (y == undefined) x = -1
+
+        user.mark(x,y);
       default:
         console.log(mess.command + " Message type undefined");
         return;

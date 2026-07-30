@@ -1,9 +1,7 @@
 import { t } from "elysia";
-import { getSchemaProperties } from "elysia/dist/schema";
 import EventEmitter from "node:events";
-import { register } from "node:module";
 import { register_model } from "../models";
-import { User, UserSchema } from "./user";
+import { UserSchema } from "./user";
 
 export class TicTacToeGame<TPlayer> extends EventEmitter {
   private win_length = 3;
@@ -42,7 +40,12 @@ export class TicTacToeGame<TPlayer> extends EventEmitter {
     }
   }
 
+  update = () => {
+    this.emit("update")
+  }
+
   mark(x: number, y: number, TPlayer: TPlayer): boolean {
+    console.log(x +","+y)
     if (TPlayer !== this.curr_player()) {
       return false;
     }
@@ -50,9 +53,11 @@ export class TicTacToeGame<TPlayer> extends EventEmitter {
       return false;
     }
     if (x < 0 || y < 0) {
+      console.log("negative value")
       return false;
     }
     if (x >= this.width || y >= this.height) {
+      console.log("out of bounds value")
       return false;
     }
     if (this.board[y][x] !== '.') {
@@ -65,6 +70,7 @@ export class TicTacToeGame<TPlayer> extends EventEmitter {
     this.board[y][x] = symbol;
 
     var res = this.check_win(symbol);
+
     if (res) {
       this.end_game(this.curr_player());
       return true;
@@ -165,6 +171,7 @@ const GameSymbols = t.Union([
   t.Literal(".")
 ])
 type GameSymbolsType = typeof GameSymbols.static
+register_model("GameSymbols",GameSymbols)
 
 export const GameScheme = t.Object({
   current_player: UserSchema,
