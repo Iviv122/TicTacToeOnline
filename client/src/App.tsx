@@ -18,6 +18,11 @@ function App() {
   const [userName, setUserName] = useState("");
   const [game, setGame] = useState<components["schemas"]["GameScheme"]>();
 
+  const domain = import.meta.env.VITE_BACKEND_DOMAIN;
+  useCallback(() => {
+    console.log(domain)
+  },[])
+
   const handleMessage = useCallback(
     (message: components["schemas"]["MessageSchema"]) => {
       switch (message.type) {
@@ -89,7 +94,7 @@ function App() {
     [],
   );
 
-  const { send } = useWebSocket("ws://localhost:3000/ws", {
+  const { send } = useWebSocket(`ws://${domain}/ws`, {
     onMessage: handleMessage,
   });
 

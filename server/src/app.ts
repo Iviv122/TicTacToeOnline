@@ -6,6 +6,7 @@ import { roomRoute } from "./routes/rooms/route";
 import { models } from "./models";
 import { MessageSchema } from "./classes/message";
 
+const port = process.env.BACKEND_PORT;
 
 export const app = new Elysia()
   .model(models)
@@ -22,4 +23,4 @@ export const app = new Elysia()
   .use(cors())
   .use(websocket_instance("/ws"))
   .group("/api", (app) => app.use(roomRoute))
-  .listen(3000);
+  .listen(port || 3000);
