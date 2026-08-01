@@ -7,8 +7,8 @@
   ],
   "scripts": {
     "dev": "pnpm -r --parallel dev",
-    "build": "pnpm -r build",
-    "start": "bun run dev -w server"
+    "build": "pnpm -r build && bun build --compile --target bun --outfile server_exec ./server/src/index.ts",
+    "start": ""
   },
   "devDependencies": {
     "concurrently": "^9.0.0"
