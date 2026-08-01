@@ -6,7 +6,7 @@ interface ButtonProps{
 
 export default function Button({label,onClick,className} : ButtonProps) {
 
-  const style = "border-2 border-solid border-white rounded-md p-2"
+  const style = "transition-all text-xs border rounded-md px-4 py-2 text-white active:scale-[.95] bg-zinc-900 cursor-pointer"
 
   return <button
     onClick={onClick}

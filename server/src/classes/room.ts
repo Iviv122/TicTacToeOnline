@@ -52,9 +52,9 @@ export class Room extends EventEmitter {
 
   internalUpdate = () => {
     for (const i of this.users) {
-      sendRoom(i, this)
+      sendRoom(i, this);
     }
-  }
+  };
 
   cleaunup = (user: User) => {
     if (!this.users.has(user)) return;
@@ -62,7 +62,11 @@ export class Room extends EventEmitter {
     this.users.delete(user);
 
     user.off("claim", this.claim_role);
-    user.off("mark", this.playerTurn)
+    user.off("mark", this.playerTurn);
+
+    if (this.game) {
+      this.game.player_leave(user);
+    }
 
     if (this.crosses === user) {
       this.crosses = undefined;
@@ -93,16 +97,18 @@ export class Room extends EventEmitter {
     user.on("claim", this.claim_role);
     user.on("mark", this.playerTurn);
 
-    this.sendGame(user)
+    if (this.state === "Playing") {
+      this.sendGame(user);
+    }
 
     this.update();
   }
 
   playerTurn = (user: User, x: number, y: number) => {
-    console.log("death")
-    this.game?.mark(x, y, user)
-    this.sendGameToAll()
-  }
+    console.log("death");
+    this.game?.mark(x, y, user);
+    this.sendGameToAll();
+  };
 
   claim_role = (user: User, role: RoomRole) => {
     switch (role) {
@@ -129,40 +135,53 @@ export class Room extends EventEmitter {
     if (this.crosses === user) {
       this.crosses = undefined;
     }
-    this.internalUpdate()
+    this.internalUpdate();
   }
   claim_crosses(user: User) {
     if (this.crosses !== undefined) {
       return;
     }
+    if (user === this.circles) {
+      this.circles == undefined;
+    }
     this.crosses = user;
-    this.internalUpdate()
+    this.internalUpdate();
   }
   claim_circles(user: User) {
     if (this.circles !== undefined) {
       return;
     }
+    if (user === this.crosses) {
+      this.crosses == undefined;
+    }
     this.circles = user;
-    this.internalUpdate()
+    this.internalUpdate();
   }
 
   user_count(): number {
     return this.users.size;
   }
 
-  startGame(): void {
+  startGame = (): void => {
     if (this.crosses && this.circles) {
       this.game = new TicTacToeGame(this.crosses, this.circles);
-      this.game.once("end", this.endGame)
+      this.game.once("end", this.endGame);
+
       this.state = "Playing";
       this.update();
-      this.sendGameToAll()
+      this.sendGameToAll();
     }
-  }
-  endGame = (): void  =>{
+  };
+  endGame = (): void => {
     this.state = "Waiting";
+    if (this.circles) {
+      this.claim_spectator(this.circles);
+    }
+    if (this.crosses) {
+      this.claim_spectator(this.crosses);
+    }
     this.update();
-  }
+  };
 
   getGame(): GameSchemeType | undefined {
     return this.game?.toJson();
@@ -182,8 +201,8 @@ export class Room extends EventEmitter {
     const mess = {
       type: "game",
       data: {
-        game: game
-      }
+        game: game,
+      },
     } as Message;
     user.sendMessage(mess);
   }

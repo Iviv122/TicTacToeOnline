@@ -2,7 +2,6 @@ import { t } from "elysia";
 import EventEmitter from "node:events";
 import { register_model } from "../models";
 import { UserSchema } from "./user";
-import { types } from "node:util";
 
 export class TicTacToeGame<TPlayer> extends EventEmitter {
   private win_length = 3;
@@ -169,6 +168,17 @@ export class TicTacToeGame<TPlayer> extends EventEmitter {
   }
   curr_player(): TPlayer{
     return this.player_queue[this.turn%this.player_queue.length]
+  }
+  player_leave = (player: TPlayer) => {
+    this.players.delete(player)
+    const index = this.player_queue.indexOf(player)
+    if (index > -1) {
+      this.player_queue.splice(index,1)
+    }
+    console.log("this.player_queue.length: " + this.player_queue.length)
+    if (this.player_queue.length == 1) {
+      this.end_game(this.player_queue[0])
+    }
   }
   reset(): void {
     // TODO

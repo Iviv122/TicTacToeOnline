@@ -19,7 +19,7 @@ export default function LobbyRoom({
   my_name,
   send,
   game,
-  reset
+  reset,
 }: RoomProps) {
   const claim = (
     role: components["schemas"]["RolesSchema"],
@@ -34,8 +34,17 @@ export default function LobbyRoom({
   };
 
   if (room.state === "Playing" && game) {
-    return <GameScreen reset_game={reset} game={game} send={send} player_name={my_name} />;
+    return (
+      <GameScreen
+        reset_game={reset}
+        game={game}
+        send={send}
+        player_name={my_name}
+      />
+    );
   }
+
+
 
   return (
     <div className="p-5">

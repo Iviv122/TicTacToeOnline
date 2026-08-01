@@ -4,6 +4,8 @@ import type { components } from "./schema";
 import LobbyRoom from "./components/lobby_room";
 import UserRename from "./components/user_rename";
 import RoomList from "./components/room_list";
+import { toast } from "react-toastify";
+import Msg from "./components/message";
 
 function App() {
   const wsRef = useRef(null);
@@ -48,6 +50,23 @@ function App() {
       }
       if (mess.type === "game") {
         setGame(mess.data.game);
+        if (mess.data.game) {
+          if (mess.data.game.game_result) {
+            if (mess.data.game.game_result === "Tie") {
+              toast.info(Msg, {
+                data: { title: `Game ended in tie!` },
+                closeOnClick: true,
+                autoClose: false,
+              });
+            } else {
+              toast.info(Msg, {
+                data: { title: `${mess.data.game.current_player.name} won!` },
+                closeOnClick: true,
+                autoClose: false,
+              });
+            }
+          }
+        }
       }
       console.log(mess);
     };
@@ -66,7 +85,8 @@ function App() {
   }, []);
 
   const reset = () => {
-  }
+    setGame(undefined);
+  };
 
   if (userId.trim() === "") {
     return <h1>Wait for connection id</h1>;
@@ -94,12 +114,12 @@ function App() {
   }
   return (
     <div>
-      <div className="flex justify-around">
-        <CreateRoom send={send} />
-        <UserRename send={send} />
+      <div className="sm:flex justify-around">
+        <CreateRoom className="text-xs sm:text-m2" send={send} />
+        <UserRename className="text-xs sm:text-m2" send={send} />
       </div>
-      <div className="flex justify-around mx-5 border-y-1">
-        <p>Your connection id: {userId}</p>
+      <div className="flex justify-around mx-5 border-y">
+        <p className="hidden sm:block">Your connection id: {userId}</p>
         <div>rooms count: {roomCount}</div>
         <div>users online: {usersCount}</div>
       </div>

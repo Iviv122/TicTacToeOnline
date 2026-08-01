@@ -4,14 +4,14 @@ import Button from "./button";
 
 interface CreateRoomProps {
   send: (mess: object) => void;
+  className?: string
 }
 
-export default function UserRename({ send }: CreateRoomProps) {
+export default function UserRename({ send, className }: CreateRoomProps) {
   const [roomName, setRoomName] = useState("");
 
   return (
-    <div>
-      <span className="m-3">Your nickname</span>
+    <div className={`flex ${className}`}>
       <TextInput
         value={roomName}
         onChange={setRoomName}
@@ -20,7 +20,7 @@ export default function UserRename({ send }: CreateRoomProps) {
       />
       <Button
         className="m-3"
-        label="Submit"
+        label="Change nickname"
         onClick={() =>
           send({
             command: "rename",
