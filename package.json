@@ -1,0 +1,16 @@
+{
+  "name": "my-app",
+  "private": true,
+  "workspaces": [
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "dev": "pnpm -r --parallel dev",
+    "build": "pnpm -r build",
+    "start": "bun run dev -w server"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0"
+  }
+}
