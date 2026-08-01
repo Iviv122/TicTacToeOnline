@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import CreateRoom from "./components/create_room";
 import type { components } from "./schema";
 import LobbyRoom from "./components/lobby_room";
@@ -6,9 +6,10 @@ import UserRename from "./components/user_rename";
 import RoomList from "./components/room_list";
 import { toast } from "react-toastify";
 import Msg from "./components/message";
+import useWebSocket from "./functions/useWebHook";
+import type { Message } from "./types/message";
 
 function App() {
-  const wsRef = useRef(null);
   const [roomCount, setRoomCount] = useState(0);
   const [rooms, setRooms] = useState<components["schemas"]["RoomSchema"][]>([]);
   const [usersCount, setUsersCount] = useState(0);
@@ -17,72 +18,80 @@ function App() {
   const [userName, setUserName] = useState("");
   const [game, setGame] = useState<components["schemas"]["GameScheme"]>();
 
-  useEffect(() => {
-    const socket = new WebSocket("ws://localhost:3000/ws");
-    wsRef.current = socket;
+  const handleMessage = useCallback(
+    (message: components["schemas"]["MessageSchema"]) => {
+      switch (message.type) {
+        case "rename":
+          if (message.data.new_name) {
+            setUserName(message.data.new_name);
+          }
+          break;
 
-    socket.onmessage = (event) => {
-      const mess = JSON.parse(
-        event.data,
-      ) as components["schemas"]["MessageSchema"];
+        case "connection":
+          if (message.data.connection_id) {
+            setUserId(message.data.connection_id);
+          }
+          if (message.data.new_name) {
+            setUserName(message.data.new_name);
+          }
+          break;
 
-      if (mess.type === "rename") {
-        setUserName(mess.data.new_name);
-      }
-      if (mess.type === "connection") {
-        setUserId(mess.data.connection_id);
-        setUserName(mess.data.new_name);
-      }
-      if (mess.type === "rooms") {
-        setRoomCount(mess.data.rooms.length);
-        setRooms(mess.data.rooms);
-      }
-      if (mess.type === "users") {
-        setUsersCount(mess.data.users_count);
-      }
-      if (mess.type === "room") {
-        setRooms((prev) =>
-          prev.map((i) => (i.id === mess.data.room.id ? mess.data.room : i)),
-        );
-      }
-      if (mess.type === "join") {
-        setJoin(mess.data.room_id);
-      }
-      if (mess.type === "game") {
-        setGame(mess.data.game);
-        if (mess.data.game) {
-          if (mess.data.game.game_result) {
-            if (mess.data.game.game_result === "Tie") {
+        case "rooms":
+          if (message.data.rooms) {
+            setRooms(message.data.rooms);
+            setRoomCount(message.data.rooms.length);
+          }
+          break;
+
+        case "users":
+          if (message.data.users_count) {
+            setUsersCount(message.data.users_count);
+          }
+          break;
+
+        case "room": {
+          const room = message.data.room;
+          if (room) {
+            setRooms((prev) => prev.map((i) => (i.id === room.id ? room : i)));
+          }
+          break;
+        }
+
+        case "join":
+          if (message.data.room_id) {
+            setJoin(message.data.room_id);
+          }
+          break;
+
+        case "game": {
+          const game = message.data.game
+          if (game) {
+            setGame(game);
+            const result = game.game_result;
+            if (result) {
               toast.info(Msg, {
-                data: { title: `Game ended in tie!` },
-                closeOnClick: true,
-                autoClose: false,
-              });
-            } else {
-              toast.info(Msg, {
-                data: { title: `${mess.data.game.current_player.name} won!` },
+                data: {
+                  title:
+                    result === "Tie"
+                      ? "Game ended in tie!"
+                      : `${game.current_player.name} won!`,
+                },
                 closeOnClick: true,
                 autoClose: false,
               });
             }
           }
+
+          break;
         }
       }
-      console.log(mess);
-    };
+    },
+    [],
+  );
 
-    socket.onerror = (err) => {
-      console.error("WebSocket error:", err);
-    };
-
-    return () => {
-      socket.close(1000, "component unmounted");
-    };
-  }, []);
-
-  const send = useCallback((data) => {
-    wsRef.current?.send(JSON.stringify(data));
-  }, []);
+  const { send } = useWebSocket("ws://localhost:3000/ws", {
+    onMessage: handleMessage,
+  });
 
   const reset = () => {
     setGame(undefined);
@@ -105,7 +114,7 @@ function App() {
           const mes = {
             command: "leave",
             payload: {},
-          };
+          } as Message;
           send(mes);
           setJoin("");
         }}

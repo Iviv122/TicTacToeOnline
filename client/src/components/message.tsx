@@ -4,7 +4,7 @@ type CustomNotificationProps = ToastContentProps<{
   title: string;
 }>;
 
-export default function Msg({ closeToast, data }: CustomNotificationProps) {
+export default function Msg({ data }: CustomNotificationProps) {
   return (
     <div className="flex flex-col w-full">
       <h3 className={"text-sm font-semibold"}>{data.title}</h3>

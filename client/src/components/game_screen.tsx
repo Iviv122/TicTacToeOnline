@@ -77,7 +77,7 @@ interface TileProps {
   onClick: () => void;
 }
 
-function Emoji(value) {
+function Emoji(value : components['schemas']['GameSymbols']) {
   switch (value) {
     case "X":
       return <X />;

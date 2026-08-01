@@ -1,9 +1,10 @@
 import { useState } from "react";
 import TextInput from "./text_input";
 import Button from "./button";
+import type { Message } from "../types/message";
 
 interface CreateRoomProps {
-  send: (mess: object) => void;
+  send: (mess: Message) => void;
   className?: string
 }
 

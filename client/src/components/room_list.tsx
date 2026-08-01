@@ -1,10 +1,11 @@
 import type { components } from "../schema";
+import type { Message } from "../types/message";
 import RoomCard from "./room_card";
 
 interface RoomListProps {
   rooms: components["schemas"]["RoomSchema"][];
   setJoin: (value: string) => void
-  send: (value) => void
+  send: (value : Message) => void
 }
 
 export default function RoomList({rooms,setJoin,send} : RoomListProps) {
@@ -20,7 +21,7 @@ export default function RoomList({rooms,setJoin,send} : RoomListProps) {
               payload: {
                 room: i.id,
               },
-            };
+            } as Message;
             setJoin(i.id);
             send(mes);
           }}

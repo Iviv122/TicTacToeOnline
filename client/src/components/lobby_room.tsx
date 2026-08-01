@@ -3,13 +3,14 @@ import type { components } from "../schema";
 import Button from "./button";
 import SpecatatorCard from "./spectator_card";
 import GameScreen from "./game_screen";
+import type { Message } from "../types/message";
 
 interface RoomProps {
   room: components["schemas"]["RoomSchema"];
   leave: () => void;
   my_name: string;
-  send: (data) => void;
-  game: components["schemas"]["GameScheme"];
+  send: (data : Message) => void;
+  game?: components["schemas"]["GameScheme"];
   reset: () => void;
 }
 
