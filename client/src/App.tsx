@@ -94,7 +94,7 @@ function App() {
     [],
   );
 
-  const { send } = useWebSocket(`ws://${domain}/ws`, {
+  const { send } = useWebSocket(`wss://${domain}/ws`, {
     onMessage: handleMessage,
   });
 
