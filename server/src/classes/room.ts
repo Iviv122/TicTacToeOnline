@@ -141,9 +141,7 @@ export class Room extends EventEmitter {
     if (this.crosses !== undefined) {
       return;
     }
-    if (user === this.circles) {
-      this.circles == undefined;
-    }
+    this.claim_spectator(user)
     this.crosses = user;
     this.internalUpdate();
   }
@@ -151,9 +149,7 @@ export class Room extends EventEmitter {
     if (this.circles !== undefined) {
       return;
     }
-    if (user === this.crosses) {
-      this.crosses == undefined;
-    }
+    this.claim_spectator(user)
     this.circles = user;
     this.internalUpdate();
   }
@@ -163,7 +159,7 @@ export class Room extends EventEmitter {
   }
 
   startGame = (): void => {
-    if (this.crosses && this.circles) {
+    if (this.crosses && this.circles && this.crosses !== this.circles) {
       this.game = new TicTacToeGame(this.crosses, this.circles);
       this.game.once("end", this.endGame);
 
