@@ -7,7 +7,7 @@
   ],
   "scripts": {
     "dev": "pnpm -r --parallel dev",
-    "install": "pnpm -C ./server install && bun install --cwd=./server --production",
+    "full_install": "pnpm -C ./client install && bun install --cwd=./server --production",
     "build": "pnpm -r build && bun build --compile --target bun --outfile server_exec ./server/src/index.ts"
   },
   "devDependencies": {
