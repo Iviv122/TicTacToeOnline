@@ -1,7 +1,12 @@
 # TicTacToe online
 
-lightweight platform to run online multiplayer lobbies
+lightweight platform to run online multiplayer lobbies for tictactoe
 
+## Tech
+
+- frontend: React + Tailwindcss + React-Toastify + pnpm
+- backend: ElysiaJS + bun
+ 
 ## Build by yourslef
 
 prerequisites
@@ -14,6 +19,8 @@ chmod +x install.sh
 ./install.sh
 ```
 
+- frontend folder: $path/client/dist
 
-frontend folder: ./client/dist
-backend exec: ./server_exec
+- backend exec file: $path/server_exec
+
+##
