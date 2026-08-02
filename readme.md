@@ -4,7 +4,7 @@ lightweight platform to run online multiplayer lobbies for tictactoe
 
 ## Tech
 
-- frontend: React + Tailwindcss + React-Toastify + pnpm
+- frontend: React + Tailwindcss + React-Toastify + pnpm + vite
 - backend: ElysiaJS + bun
 
 ## .env
