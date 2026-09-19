@@ -111,7 +111,6 @@ function App() {
     return (
       <LobbyRoom
         my_name={userName}
-        my_id={userId}
         room={a}
         send={send}
         game={game}

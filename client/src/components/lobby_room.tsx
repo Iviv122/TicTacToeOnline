@@ -9,7 +9,6 @@ interface RoomProps {
   room: components["schemas"]["RoomSchema"];
   leave: () => void;
   my_name: string;
-  my_id: number;
   send: (data: Message) => void;
   game?: components["schemas"]["GameScheme"];
   reset: () => void;
@@ -19,7 +18,6 @@ export default function LobbyRoom({
   room,
   leave,
   my_name,
-  my_id,
   send,
   game,
   reset,
